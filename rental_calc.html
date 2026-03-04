@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2026 房東收益決策儀表板 (V11 SaaS Prototype)</title>
+    <meta name="description" content="專業房東稅後淨利計算工具，涵蓋社會住宅、公益出租、法人代管與房貸抵稅模擬。">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .highlight-row { background-color: #f0f9ff; font-weight: 800; color: #1e40af; }
+        .base-row { background-color: #f8fafc; font-weight: 700; color: #1e293b; }
+        .rent-row { background-color: #fffbeb; font-weight: 800; color: #78350f; }
+        .withhold-row { color: #991b1b; font-style: italic; font-weight: 700; font-size: 0.95rem; }
+        .label-style { font-size: 1.05rem; color: #374151; font-weight: 700; }
+        .label-final { font-size: 1.15rem; color: #111827; font-weight: 800; }
+        td, th { padding: 10px 16px !important; }
+        input, select { transition: all 0.2s; }
+        input:focus, select:focus { border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2); }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen font-sans antialiased text-slate-900">
+
+    <nav class="bg-slate-900 text-white p-4 shadow-lg sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <div class="flex items-center gap-2">
+                <i class="fas fa-calculator text-blue-400 text-2xl"></i>
+                <span class="text-xl font-black tracking-tighter uppercase">Rental Profit <span class="text-blue-400 text-sm">SaaS PRO</span></span>
+            </div>
+            <div class="hidden md:flex items-center gap-4 text-xs font-bold text-slate-400 uppercase tracking-widest">
+                <span>Version 2026.03 (Q1)</span>
+                <span class="bg-blue-600 text-white px-2 py-1 rounded">Beta</span>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto p-4 md:p-8">
+        
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            
+            <aside class="lg:col-span-4 space-y-6">
+                <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-200">
+                    <h3 class="text-sm font-black text-slate-800 mb-6 uppercase border-b pb-2">基本參數設定</h3>
+                    
+                    <div class="space-y-4">
+                        <div class="p-4 bg-orange-50 rounded-2xl border border-orange-100">
+                            <span class="text-[10px] font-black text-orange-600 uppercase">軌道 A：社宅/公益/自租</span>
+                            <div class="grid grid-cols-2 gap-4 mt-2">
+                                <div>
+                                    <label class="block text-[10px] text-slate-400 font-bold mb-1">月租金</label>
+                                    <input type="number" id="rentA" value="29000" class="w-full p-2 rounded-lg border border-slate-200 font-bold">
+                                </div>
+                                <div>
+                                    <label class="block text-[10px] text-slate-400 font-bold mb-1">綜所稅率%</label>
+                                    <input type="number" id="taxRateA" value="12" class="w-full p-2 rounded-lg border border-slate-200 font-bold">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="p-4 bg-blue-50 rounded-2xl border border-blue-100">
+                            <span class="text-[10px] font-black text-blue-600 uppercase">軌道 B：法人/代管</span>
+                            <div class="grid grid-cols-2 gap-4 mt-2">
+                                <div>
+                                    <label class="block text-[10px] text-slate-400 font-bold mb-1">月租金</label>
+                                    <input type="number" id="rentB" value="40000" class="w-full p-2 rounded-lg border border-slate-200 font-bold">
+                                </div>
+                                <div>
+                                    <label class="block text-[10px] text-slate-400 font-bold mb-1">綜所稅率%</label>
+                                    <input type="number" id="taxRateB" value="20" class="w-full p-2 rounded-lg border border-slate-200 font-bold">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="pt-4">
+                            <label class="block text-[10px] font-black text-slate-500 uppercase mb-2">高雄行政區選擇 (預留地價稅連動)</label>
+                            <select id="district" class="w-full p-3 rounded-xl border border-slate-200 bg-slate-50 font-bold text-sm">
+                                <option value="qiao">橋頭區 (預設)</option>
+                                <option value="nan">楠梓區</option>
+                                <option value="zuo">左營區</option>
+                                <option value="gu">鼓山區</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-[10px] font-black text-slate-500 uppercase mb-2">每月房貸利息支出 (預留列舉扣除試算)</label>
+                            <input type="number" id="mortgage" value="0" placeholder="輸入利息金額..." class="w-full p-3 rounded-xl border border-slate-200 bg-slate-50 font-bold text-sm italic">
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+            <div class="lg:col-span-8 space-y-6">
+                <div class="bg-white rounded-3xl shadow-xl overflow-hidden border border-slate-200">
+                    <div id="tableContainer" class="overflow-x-auto">
+                        </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="bg-slate-100 p-6 rounded-2xl text-[10px] leading-relaxed text-slate-500">
+                        <h4 class="font-black text-slate-800 uppercase mb-2">⚖️ 免責聲明 (Disclaimer)</h4>
+                        <p>本工具僅供試算參考，實際稅額以國稅局及稅捐稽徵處發出之稅單為準。投資與租賃決策請諮詢專業會計師或租賃經理人。</p>
+                        <p class="mt-2 text-blue-600 font-bold underline">Version: 2026.03 版 | 符合高雄囤房稅 2.0 邏輯</p>
+                    </div>
+                    <div class="bg-blue-50 p-6 rounded-2xl text-[10px] leading-relaxed text-blue-800">
+                        <h4 class="font-black uppercase mb-2">🚀 SaaS 模式連動預告</h4>
+                        <ul class="list-disc ml-4 space-y-1">
+                            <li>預計加入：實價登錄租金行情熱點圖</li>
+                            <li>預計加入：一鍵產出 PDF 租賃分析報告書</li>
+                            <li>預計加入：房地合一稅出售獲利預估模組</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+<script>
+function formatCurrency(num) { return Math.round(num).toLocaleString(); }
+
+function calculate() {
+    const rentA = parseFloat(document.getElementById('rentA').value) || 0;
+    const taxA = (parseFloat(document.getElementById('taxRateA').value) || 0) / 100;
+    const rentB = parseFloat(document.getElementById('rentB').value) || 0;
+    const taxB = (parseFloat(document.getElementById('taxRateB').value) || 0) / 100;
+    const mortgage = parseFloat(document.getElementById('mortgage').value) || 0;
+    const hValue = 600000; const lValue = 500000; 
+
+    const modes = [
+        { name: "社會住宅 (代管)", mRent: rentA * 0.9, rate: taxA, type: 'sh' },
+        { name: "公益出租人", mRent: rentA, rate: taxA, type: 'pi' },
+        { name: "房東自租自管", mRent: rentA, rate: taxA, type: 'self' },
+        { name: "大管家代管 (法人)", mRent: rentB, rate: taxB, type: 'big_m' },
+        { name: "橘公寓代管 (法人)", mRent: rentB, rate: taxB, type: 'orange' }
+    ];
+
+    let html = `<table class="w-full text-left min-w-[800px]">
+        <thead class="bg-slate-900 text-white text-[11px] uppercase tracking-widest">
+            <tr>
+                <th class="p-4 border-r border-slate-800">分析細項</th>
+                ${modes.map(m => `<th class="text-center p-4">${m.name}</th>`).join('')}
+            </tr>
+        </thead>
+        <tbody>`;
+
+    const results = modes.map(m => {
+        let taxableMonth = 0; let hTax = 0; let lTax = 0;
+        let mgtFee = 0; let nhiFee = 0; let withholdTax = 0;
+
+        if (m.type === 'sh') {
+            taxableMonth = Math.max(0, m.mRent - 15000) * 0.4;
+            hTax = hValue * 0.012; lTax = lValue * 0.002;
+        } else if (m.type === 'pi') {
+            taxableMonth = Math.max(0, m.mRent - 15000) * 0.57;
+            hTax = hValue * 0.012; lTax = lValue * 0.002;
+        } else if (m.type === 'self') {
+            taxableMonth = m.mRent * 0.57;
+            hTax = hValue * 0.024; lTax = lValue * 0.01;
+        } else {
+            taxableMonth = Math.max(0, Math.min(m.mRent, 20000) - 6000) * 0.47 + Math.max(0, m.mRent - 20000) * 0.57;
+            hTax = hValue * 0.03; lTax = lValue * 0.01;
+            withholdTax = m.mRent * 12 * 0.1;
+            nhiFee = m.mRent * 12 * 0.0211;
+            mgtFee = (m.type === 'big_m') ? m.mRent * 0.1 * 12 : m.mRent;
+        }
+
+        const incomeTaxActual = taxableMonth * 12 * m.rate;
+        const netProfit = (m.mRent * 12) - incomeTaxActual - hTax - lTax - mgtFee - nhiFee;
+        return { mRent: m.mRent, gross: m.mRent * 12, withholdTax, nhiFee, incomeTaxActual, hTax, lTax, mgtFee, netProfit };
+    });
+
+    const rows = [
+        { label: "📍 簽約月租金", key: "mRent", class: "rent-row", lStyle: "label-style" },
+        { label: "年度總收入 (Gross)", key: "gross", class: "base-row border-b-2", lStyle: "label-style" },
+        { label: "－ 法人預扣所得稅 (10%)", key: "withholdTax", class: "withhold-row", lStyle: "label-style" },
+        { label: "－ 二代健保補充保費 (2.11%)", key: "nhiFee", class: "withhold-row", lStyle: "label-style" },
+        { label: "年度應繳所得稅額", key: "incomeTaxActual", color: "text-red-800 font-bold", lStyle: "label-style" },
+        { label: "年度房屋稅 (自用/非自用)", key: "hTax", color: "text-indigo-800 font-bold", lStyle: "label-style" },
+        { label: "年度地價稅 (自用/一般)", key: "lTax", color: "text-purple-800 font-bold", lStyle: "label-style" },
+        { label: "年度物管服務費", key: "mgtFee", color: "text-slate-700 font-bold", lStyle: "label-style" },
+        { label: "💰 最終淨利 (稅後實拿)", key: "netProfit", class: "highlight-row", lStyle: "label-final", isFinal: true }
+    ];
+
+    rows.forEach(r => {
+        html += `<tr class="border-b ${r.class || ''} transition-all hover:bg-slate-50">
+            <td class="${r.lStyle} border-r border-slate-100">${r.label}</td>
+            ${results.map(res => {
+                const val = res[r.key];
+                const display = (val === 0) ? "-" : "$" + formatCurrency(val);
+                return `<td class="text-center val-text font-bold ${r.color || ''} ${r.isFinal ? 'text-2xl font-black' : ''}">${display}</td>`
+            }).join('')}
+        </tr>`;
+    });
+
+    html += `</tbody></table>`;
+    document.getElementById('tableContainer').innerHTML = html;
+}
+
+document.querySelectorAll('input, select').forEach(el => el.addEventListener('input', calculate));
+calculate();
+</script>
+</body>
+</html>
