@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>2026 房東收益決策儀表板 | 專業版</title>
+    <title>2026 房東收益決策儀表板 | 專業 PDF 版</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
@@ -14,84 +14,78 @@
         .highlight-row { background-color: #f0f9ff !important; font-weight: 800; color: #1e40af; }
         .base-row { background-color: #f8fafc !important; font-weight: 700; color: #1e293b; }
         .rent-row { background-color: #fffbeb !important; font-weight: 800; color: #78350f; }
-        .withhold-row { color: #991b1b; font-style: italic; font-weight: 700; font-size: 0.95rem; }
-        .label-style { font-size: 1.1rem; color: #374151; font-weight: 700; }
-        .label-final { font-size: 1.25rem; color: #111827; font-weight: 900; }
+        .withhold-row { color: #991b1b; font-style: italic; font-weight: 700; font-size: 0.9rem; }
+        .label-style { font-size: 1.05rem; color: #374151; font-weight: 700; }
+        .label-final { font-size: 1.2rem; color: #111827; font-weight: 900; }
         
-        /* 縮減高度與顏色 */
-        td, th { padding: 12px 16px !important; border-bottom: 1px solid #e2e8f0; }
-        .income-tax { color: #991b1b !important; font-weight: 800; }
-        .house-tax { color: #3730a3 !important; font-weight: 800; }
-        .land-tax { color: #6b21a8 !important; font-weight: 800; }
-        .mgt-fee { color: #334155 !important; font-weight: 800; }
+        td, th { padding: 10px 12px !important; border-bottom: 1px solid #e2e8f0; }
 
-        /* 列印優化：PDF 模式 */
+        /* 列印核心修正：解決拆成多頁問題 */
         @media print {
+            @page { 
+                size: A4 landscape; /* 強制橫式 */
+                margin: 0.5cm;     /* 縮小邊距 */
+            }
             .no-print { display: none !important; }
-            body { background: white; padding: 0; }
-            .print-container { width: 100%; border: none; shadow: none; }
-            .main-card { border: none !important; box-shadow: none !important; }
-            .pdf-header { display: block !important; margin-bottom: 20px; }
+            body { background: white; padding: 0; margin: 0; zoom: 85%; /* 稍微縮小比例以符合單頁 */ }
+            .print-container { width: 100%; border: none !important; margin: 0 !important; }
+            .main-card { border: 1px solid #eee !important; box-shadow: none !important; border-radius: 0 !important; }
+            .pdf-header { display: block !important; margin-bottom: 15px; text-align: center; }
+            
+            /* 防止表格內容被截斷 */
+            table { table-layout: auto !important; width: 100% !important; page-break-inside: avoid; }
+            tr { page-break-inside: avoid; page-break-after: auto; }
+            
+            /* 讓下方的算法區塊緊跟表格，不強制跳頁 */
+            .info-grid { display: flex !important; gap: 10px !important; margin-top: 20px !important; }
+            .info-card { flex: 1 !important; border: 1px solid #ddd !important; shadow: none !important; }
         }
-        .pdf-header { display: none; text-align: center; border-bottom: 2px solid #333; padding-bottom: 10px; }
+        
+        .pdf-header { display: none; }
+        .info-grid { display: grid; grid-template-cols: 1fr; gap: 24px; }
+        @media (min-width: 1024px) { .info-grid { grid-template-cols: repeat(2, 1fr); } }
     </style>
 </head>
 <body class="bg-slate-100 min-h-screen p-4 md:p-8">
 
     <div class="max-w-7xl mx-auto">
-        <div class="flex flex-col md:flex-row justify-between items-center mb-8 gap-4 no-print">
+        <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4 no-print">
             <div class="flex items-center gap-3">
                 <div class="bg-slate-900 text-white p-3 rounded-2xl shadow-lg">
                     <i class="fas fa-chart-line text-2xl text-blue-400"></i>
                 </div>
                 <div>
-                    <h1 class="text-3xl font-black text-slate-800 tracking-tighter">房東收益決策儀表板 <span class="text-blue-600">2026 PRO</span></h1>
-                    <p class="text-sm text-slate-500 font-bold uppercase tracking-widest">Version 2026.03 | 高雄租賃稅務精確版</p>
+                    <h1 class="text-2xl font-black text-slate-800 tracking-tighter">房東收益決策儀表板 <span class="text-blue-600">2026 PRO</span></h1>
+                    <p class="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Version 2026.03 | 高雄租賃稅務精確版</p>
                 </div>
             </div>
-            <button onclick="window.print()" class="bg-blue-600 hover:bg-blue-700 text-white font-black py-3 px-8 rounded-2xl shadow-xl transition-all flex items-center gap-2 transform hover:scale-105">
-                <i class="fas fa-file-pdf"></i> 產出 PDF 分析報告
+            <button onclick="window.print()" class="bg-blue-600 hover:bg-blue-700 text-white font-black py-3 px-8 rounded-2xl shadow-xl transition-all flex items-center gap-2 transform hover:scale-105 active:scale-95">
+                <i class="fas fa-file-pdf"></i> 產出單頁 PDF 報告
             </button>
         </div>
 
         <div class="pdf-header">
-            <h1 style="font-size: 24pt; font-weight: 900;">2026 房東租賃收益財務分析報告書</h1>
-            <p style="font-size: 12pt; color: #666;">生成日期：2026.03 | 基於所得稅、房屋稅、地價稅全路徑試算</p>
+            <h1 style="font-size: 22pt; font-weight: 900; color: #0f172a;">2026 房東租賃收益財務分析報告</h1>
+            <p style="font-size: 10pt; color: #64748b;">本分析包含所得稅、房屋稅、地價稅全路徑試算 | 生成時間：2026.03</p>
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
             <aside class="lg:col-span-3 space-y-6 no-print">
                 <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-200 sticky top-8">
-                    <h3 class="text-sm font-black text-slate-800 mb-6 uppercase border-b-2 border-blue-500 pb-2">
-                        <i class="fas fa-cog mr-2"></i>參數設定
-                    </h3>
-                    
+                    <h3 class="text-xs font-black text-slate-800 mb-6 uppercase border-b-2 border-blue-500 pb-2">參數設定</h3>
                     <div class="space-y-6">
                         <div class="p-4 bg-orange-50 rounded-2xl border border-orange-200">
-                            <span class="text-[10px] font-black text-orange-600 uppercase tracking-widest">軌道 A：社宅/公益/自租</span>
+                            <span class="text-[9px] font-black text-orange-600 uppercase">軌道 A：社宅/公益/自租</span>
                             <div class="grid grid-cols-1 gap-3 mt-3">
-                                <div>
-                                    <label class="block text-[10px] font-bold text-orange-400 mb-1">月租金基準</label>
-                                    <input type="number" id="rentA" value="29000" class="w-full p-2 rounded-lg border-2 border-orange-200 font-black text-lg focus:border-orange-500 outline-none">
-                                </div>
-                                <div>
-                                    <label class="block text-[10px] font-bold text-orange-400 mb-1">綜所稅率 (%)</label>
-                                    <input type="number" id="taxRateA" value="12" class="w-full p-2 rounded-lg border-2 border-orange-200 font-black text-lg focus:border-orange-500 outline-none">
-                                </div>
+                                <input type="number" id="rentA" value="29000" class="w-full p-2 rounded-lg border-2 border-orange-200 font-black text-lg focus:border-orange-500 outline-none" placeholder="月租金">
+                                <input type="number" id="taxRateA" value="12" class="w-full p-2 rounded-lg border-2 border-orange-200 font-black text-lg focus:border-orange-500 outline-none" placeholder="稅率%">
                             </div>
                         </div>
-
                         <div class="p-4 bg-blue-50 rounded-2xl border border-blue-200">
-                            <span class="text-[10px] font-black text-blue-600 uppercase tracking-widest">軌道 B：一般代管 (法人)</span>
+                            <span class="text-[9px] font-black text-blue-600 uppercase">軌道 B：一般代管 (法人)</span>
                             <div class="grid grid-cols-1 gap-3 mt-3">
-                                <div>
-                                    <label class="block text-[10px] font-bold text-blue-400 mb-1">月租金基準</label>
-                                    <input type="number" id="rentB" value="40000" class="w-full p-2 rounded-lg border-2 border-blue-200 font-black text-lg focus:border-blue-500 outline-none">
-                                </div>
-                                <div>
-                                    <label class="block text-[10px] font-bold text-blue-400 mb-1">綜所稅率 (%)</label>
-                                    <input type="number" id="taxRateB" value="20" class="w-full p-2 rounded-lg border-2 border-blue-200 font-black text-lg focus:border-blue-500 outline-none">
-                                </div>
+                                <input type="number" id="rentB" value="40000" class="w-full p-2 rounded-lg border-2 border-blue-200 font-black text-lg focus:border-blue-500 outline-none" placeholder="月租金">
+                                <input type="number" id="taxRateB" value="20" class="w-full p-2 rounded-lg border-2 border-blue-200 font-black text-lg focus:border-blue-500 outline-none" placeholder="稅率%">
                             </div>
                         </div>
                     </div>
@@ -104,40 +98,27 @@
                         </div>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="bg-blue-50 p-6 rounded-3xl border border-blue-100 shadow-sm">
-                        <h3 class="text-sm font-black text-blue-900 mb-4 border-b border-blue-200 pb-2 uppercase tracking-widest">
-                            <i class="fas fa-calculator mr-2"></i>所得稅計算算法
-                        </h3>
-                        <div class="space-y-3 text-[12px] font-medium leading-relaxed">
+                <div class="info-grid">
+                    <div class="info-card bg-blue-50 p-6 rounded-3xl border border-blue-100 shadow-sm">
+                        <h3 class="text-sm font-black text-blue-900 mb-4 border-b border-blue-200 pb-2 uppercase">⚖️ 所得稅計算算法</h3>
+                        <div class="space-y-2 text-[11px] font-medium text-blue-800">
                             <p>● <strong>社會住宅：</strong> [(月租 - 1.5萬) × 40%] × 12 × 稅率</p>
                             <p>● <strong>公益出租：</strong> [(月租 - 1.5萬或0) × 57%] × 12 × 稅率</p>
-                            <p>● <strong>大管家/橘公寓：</strong> [(6k-20k部分×47%) + (20k以上部分×57%)] × 12 × 稅率</p>
+                            <p>● <strong>代管/法人：</strong> [(6k-20k部分×47%) + (20k以上部分×57%)] × 12 × 稅率</p>
                         </div>
                     </div>
-                    <div class="bg-slate-50 p-6 rounded-3xl border border-slate-200 shadow-sm">
-                        <h3 class="text-sm font-black text-slate-800 mb-4 border-b pb-2 uppercase tracking-widest">
-                            <i class="fas fa-home mr-2"></i>持有稅率標準 (高雄 2.0)
-                        </h3>
-                        <div class="space-y-4 text-xs font-bold">
-                            <div class="flex justify-between items-center">
-                                <span class="text-slate-600 font-medium">社宅 / 公益出租：</span>
-                                <span class="text-green-700 bg-green-100 px-2 py-1 rounded">房屋 1.2% / 地價 2‰</span>
-                            </div>
-                            <div class="flex justify-between items-center">
-                                <span class="text-slate-600 font-medium">自租 / 大管家代管：</span>
-                                <span class="text-slate-700 bg-slate-200 px-2 py-1 rounded">房屋 2.4% / 地價 10‰</span>
-                            </div>
-                            <div class="flex justify-between items-center">
-                                <span class="text-red-700 font-medium">橘公寓代管 (法人)：</span>
-                                <span class="text-red-800 bg-red-100 px-2 py-1 rounded">房屋 3.0% / 地價 10‰</span>
-                            </div>
+                    <div class="info-card bg-slate-50 p-6 rounded-3xl border border-slate-200 shadow-sm">
+                        <h3 class="text-sm font-black text-slate-800 mb-4 border-b pb-2 uppercase">🏠 持有稅率標準 (高雄 2.0)</h3>
+                        <div class="space-y-2 text-[11px] font-bold">
+                            <div class="flex justify-between"><span>社宅 / 公益出租：</span><span class="text-green-700">房屋 1.2% / 地價 2‰</span></div>
+                            <div class="flex justify-between"><span>自租 / 大管家代管：</span><span class="text-slate-700">房屋 2.4% / 地價 10‰</span></div>
+                            <div class="flex justify-between"><span>橘公寓代管 (法人)：</span><span class="text-red-800">房屋 3.0% / 地價 10‰</span></div>
                         </div>
                     </div>
                 </div>
 
-                <div class="bg-white p-4 rounded-2xl border border-slate-200 text-[10px] text-slate-400 font-medium">
-                    ⚖️ <strong>免責聲明：</strong> 本報告僅供參考，實際稅額以國稅局及稅捐稽徵處發出之稅單為準。投資與租賃決策請諮詢專業顧問。
+                <div class="bg-white p-4 rounded-2xl border border-slate-200 text-[10px] text-slate-400 text-center">
+                    ⚖️ <strong>免責聲明：</strong> 本報告僅供參考，實際稅額以國稅局及稅捐稽徵處發出之稅單為準。
                 </div>
             </div>
         </div>
@@ -162,9 +143,9 @@ window.onload = function() {
             { name: "橘公寓代管 (法人)", mRent: rentB, rate: taxB, type: 'orange' }
         ];
 
-        let html = `<table class="w-full text-left min-w-[900px]">
+        let html = `<table class="w-full text-left">
             <thead>
-                <tr class="bg-slate-900 text-white text-[11px] font-black uppercase tracking-widest">
+                <tr class="bg-slate-900 text-white text-[10px] font-black uppercase tracking-widest">
                     <th class="p-4 border-r border-slate-700">財務分析項目</th>` + 
                     modes.map(m => `<th class="text-center p-4">${m.name}</th>`).join('') + 
                 `</tr></thead><tbody>`;
@@ -198,13 +179,13 @@ window.onload = function() {
 
         const rows = [
             { label: "📍 簽約月租金收入", key: "mRent", class: "rent-row", lStyle: "label-style" },
-            { label: "年度總租金總收入 (Gross)", key: "gross", class: "base-row border-b-2", lStyle: "label-style" },
+            { label: "年度總租金收入 (Gross)", key: "gross", class: "base-row", lStyle: "label-style" },
             { label: "- 法人預扣所得稅 (10%)", key: "withholdTax", class: "withhold-row", lStyle: "label-style" },
             { label: "- 二代健保補充保費 (2.11%)", key: "nhiFee", class: "withhold-row", lStyle: "label-style" },
-            { label: "年度應繳所得稅額", key: "incomeTaxActual", color: "income-tax", lStyle: "label-style" },
-            { label: "年度房屋稅", key: "hTax", color: "house-tax", lStyle: "label-style" },
-            { label: "年度地價稅", key: "lTax", color: "land-tax", lStyle: "label-style" },
-            { label: "年度物管服務費", key: "mgtFee", color: "mgt-fee", lStyle: "label-style" },
+            { label: "年度應繳所得稅額", key: "incomeTaxActual", color: "text-red-700", lStyle: "label-style" },
+            { label: "年度房屋稅", key: "hTax", color: "text-indigo-800", lStyle: "label-style" },
+            { label: "年度地價稅", key: "lTax", color: "text-purple-800", lStyle: "label-style" },
+            { label: "年度物管服務費", key: "mgtFee", color: "text-slate-600", lStyle: "label-style" },
             { label: "💰 最終淨利 (稅後實拿)", key: "netProfit", class: "highlight-row", lStyle: "label-final", isFinal: true }
         ];
 
@@ -214,7 +195,7 @@ window.onload = function() {
                 results.map(res => {
                     const val = res[r.key];
                     const display = (val === 0) ? "-" : "$" + formatCurrency(val);
-                    return `<td class="text-center font-bold ${r.color || ''} ${r.isFinal ? 'text-2xl font-black' : 'text-lg'}">${display}</td>`;
+                    return `<td class="text-center font-bold ${r.color || ''} ${r.isFinal ? 'text-xl font-black' : ''}">${display}</td>`;
                 }).join('') + `</tr>`;
         });
 
