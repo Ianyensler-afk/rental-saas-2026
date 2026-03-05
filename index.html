@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>2026 房東收益決策儀表板 | V20 Pro</title>
+    <title>2026 房東收益決策儀表板 | V21 Pro</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
@@ -11,30 +11,26 @@
         body { font-family: 'Noto Sans TC', sans-serif; background-color: #f1f5f9; margin: 0; padding: 0; }
         .font-num { font-family: 'Poppins', sans-serif; }
         
-        /* 寬度優化：確保 5 欄同時顯示 */
         .table-wrapper { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-        table { table-layout: fixed; width: 100%; min-width: 950px; border-collapse: collapse; }
-        th, td { padding: 8px 6px !important; border-bottom: 1px solid #e2e8f0; font-size: 13px; text-align: center; }
-        .label-col { width: 155px; text-align: left; background: #fff; position: sticky; left: 0; z-index: 10; border-right: 2px solid #cbd5e1; }
+        table { table-layout: fixed; width: 100%; min-width: 1000px; border-collapse: collapse; }
+        th, td { padding: 10px 8px !important; border-bottom: 1px solid #e2e8f0; font-size: 13px; text-align: center; }
+        .label-col { width: 165px; text-align: left; background: #fff; position: sticky; left: 0; z-index: 10; border-right: 2px solid #cbd5e1; }
 
-        /* 特殊色彩 */
         .highlight-row { background-color: #f0f7ff !important; color: #1e40af !important; -webkit-print-color-adjust: exact; }
         .rent-row { background-color: #fffbeb !important; color: #78350f !important; -webkit-print-color-adjust: exact; }
         .tax-base-row { background-color: #fdf2f8 !important; color: #9d174d !important; -webkit-print-color-adjust: exact; }
         
-        /* 互動效果 */
         .clickable { cursor: pointer; transition: background 0.2s; position: relative; }
         .clickable:hover { background-color: rgba(59, 130, 246, 0.15); }
-        .clickable::after { content: '🔍'; position: absolute; right: 2px; top: 2px; font-size: 8px; opacity: 0.3; }
+        .clickable::after { content: '🔍'; position: absolute; right: 2px; top: 2px; font-size: 8px; opacity: 0.2; }
 
-        /* 彈窗樣式 */
-        #modal { display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.8); z-index: 1000; align-items: center; justify-content: center; padding: 20px; }
-        .modal-box { background: white; padding: 24px; border-radius: 24px; max-width: 500px; width: 100%; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); border: 1px solid #e2e8f0; }
+        #modal { display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.85); z-index: 1000; align-items: center; justify-content: center; padding: 20px; }
+        .modal-box { background: white; padding: 24px; border-radius: 24px; max-width: 500px; width: 100%; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); }
 
         @media print {
             @page { size: A4 landscape; margin: 0; }
             .no-print { display: none !important; }
-            .print-area { width: 100% !important; padding: 0.5cm !important; transform: scale(0.82); transform-origin: top center; }
+            .print-area { width: 100% !important; padding: 0.5cm !important; transform: scale(0.8); transform-origin: top center; }
             body { background: white; }
         }
     </style>
@@ -44,11 +40,11 @@
     <div id="modal" onclick="this.style.display='none'">
         <div class="modal-box" onclick="event.stopPropagation()">
             <div class="flex justify-between items-center mb-4 border-b pb-2">
-                <h3 id="mTitle" class="font-black text-slate-800 flex items-center gap-2"><i class="fas fa-microchip text-blue-500"></i> 計算過程詳解</h3>
-                <button onclick="document.getElementById('modal').style.display='none'" class="text-slate-400 hover:text-slate-600 text-2xl">&times;</button>
+                <h3 id="mTitle" class="font-black text-slate-800 flex items-center gap-2"><i class="fas fa-search-dollar text-blue-500"></i> 計算詳解</h3>
+                <button onclick="document.getElementById('modal').style.display='none'" class="text-slate-400 text-2xl">&times;</button>
             </div>
-            <div id="mBody" class="text-sm text-slate-600 space-y-4 leading-relaxed font-medium bg-slate-50 p-4 rounded-xl border border-slate-100 italic"></div>
-            <button onclick="document.getElementById('modal').style.display='none'" class="w-full mt-6 bg-slate-900 text-white py-3 rounded-xl font-black shadow-lg">確認並返回</button>
+            <div id="mBody" class="text-sm text-slate-600 space-y-4 bg-slate-50 p-4 rounded-xl border italic"></div>
+            <button onclick="document.getElementById('modal').style.display='none'" class="w-full mt-6 bg-slate-900 text-white py-3 rounded-xl font-black">關閉</button>
         </div>
     </div>
 
@@ -57,57 +53,65 @@
             <div class="flex items-center gap-3">
                 <div class="bg-slate-900 text-white p-2 rounded-xl shadow-xl"><i class="fas fa-chart-line text-xl text-blue-400"></i></div>
                 <div>
-                    <h1 class="text-xl md:text-2xl font-black text-slate-800 tracking-tighter italic uppercase">Rental SaaS <span class="text-blue-600">V20</span></h1>
-                    <p class="text-[9px] text-slate-400 font-bold uppercase tracking-widest">Enterprise SaaS Prototype | 全數值穿透詳解</p>
+                    <h1 class="text-xl md:text-2xl font-black text-slate-800 tracking-tighter uppercase italic">Rental SaaS <span class="text-blue-600">V21</span></h1>
+                    <p class="text-[9px] text-slate-400 font-bold tracking-widest">全數據穿透 | 精確稅務換算版</p>
                 </div>
             </div>
-            <button onclick="window.print()" class="bg-blue-600 hover:bg-blue-700 text-white font-black py-2.5 px-8 rounded-xl shadow-lg transition-all flex items-center gap-2">
-                <i class="fas fa-file-pdf"></i> 生成 PDF 財務報告
+            <button onclick="window.print()" class="bg-blue-600 hover:bg-blue-700 text-white font-black py-2 px-8 rounded-xl shadow-lg transition-all flex items-center gap-2">
+                <i class="fas fa-print"></i> 產出 A4 PDF
             </button>
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
             <aside class="lg:col-span-3 space-y-4 no-print">
-                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
-                    <h3 class="text-xs font-black text-slate-500 mb-4 border-b pb-2 tracking-widest uppercase">財務參數配置</h3>
+                <div class="bg-white p-5 rounded-2xl border shadow-sm">
+                    <h3 class="text-xs font-black text-slate-500 mb-4 border-b pb-2 uppercase italic">設定中心</h3>
                     <div class="space-y-4">
                         <div class="p-3 bg-orange-50 rounded-xl border border-orange-100 space-y-2">
-                            <label class="block text-[10px] font-black text-orange-600 uppercase">軌道 A (2.9萬/12%)</label>
+                            <label class="block text-[10px] font-black text-orange-600 uppercase">軌道 A (個人/社宅)</label>
                             <div class="flex gap-1">
                                 <input type="number" id="rentA" value="29000" class="w-2/3 p-2 rounded-lg border font-black" oninput="runCalc()">
-                                <select id="rtA" class="w-1/3 text-[10px] rounded-lg border-orange-200 font-bold" onchange="runCalc()"><option value="inc">含稅</option><option value="ex">未稅</option></select>
+                                <select id="rtA" class="w-1/3 text-[10px] rounded-lg border-orange-200" onchange="runCalc()"><option value="inc">含稅</option><option value="ex">未稅</option></select>
                             </div>
                             <input type="number" id="taxA" value="12" class="w-full p-2 rounded-lg border font-black" oninput="runCalc()" placeholder="稅率%">
                         </div>
                         <div class="p-3 bg-blue-50 rounded-xl border border-blue-100 space-y-2">
-                            <label class="block text-[10px] font-black text-blue-600 uppercase">軌道 B (4萬/20%)</label>
+                            <label class="block text-[10px] font-black text-blue-600 uppercase">軌道 B (一般/法人)</label>
                             <div class="flex gap-1">
                                 <input type="number" id="rentB" value="40000" class="w-2/3 p-2 rounded-lg border font-black" oninput="runCalc()">
-                                <select id="rtB" class="w-1/3 text-[10px] rounded-lg border-blue-200 font-bold" onchange="runCalc()"><option value="inc">含稅</option><option value="ex" selected>未稅</option></select>
+                                <select id="rtB" class="w-1/3 text-[10px] rounded-lg border-blue-200" onchange="runCalc()"><option value="inc">含稅</option><option value="ex" selected>未稅</option></select>
                             </div>
                             <input type="number" id="taxB" value="20" class="w-full p-2 rounded-lg border font-black" oninput="runCalc()" placeholder="稅率%">
                         </div>
-                        <div class="p-3 bg-slate-100 rounded-xl border border-slate-200 space-y-2">
-                            <label class="block text-[10px] font-bold text-slate-500 uppercase italic">附加費用</label>
-                            <div class="flex gap-1">
-                                <input type="number" id="mgtIn" value="2500" class="w-2/3 p-2 rounded-lg border font-bold text-xs" oninput="runCalc()">
-                                <select id="mtx" class="w-1/3 text-[10px] rounded-lg" onchange="runCalc()"><option value="inc">含稅</option><option value="ex">未稅</option></select>
-                            </div>
-                            <div class="flex gap-1">
-                                <input type="number" id="pkgIn" value="3000" class="w-2/3 p-2 rounded-lg border font-bold text-xs" oninput="runCalc()">
-                                <select id="ptx" class="w-1/3 text-[10px] rounded-lg" onchange="runCalc()"><option value="inc">含稅</option><option value="ex">未稅</option></select>
-                            </div>
+                        <div class="p-3 bg-slate-100 rounded-xl border space-y-2">
+                            <label class="block text-[10px] font-bold text-slate-500 uppercase">固定附加費用 (預設3,000)</label>
+                            <input type="number" id="mgtIn" value="3000" class="w-full p-2 rounded-lg border font-bold text-xs" oninput="runCalc()" placeholder="管理費">
+                            <input type="number" id="pkgIn" value="3000" class="w-full p-2 rounded-lg border font-bold text-xs" oninput="runCalc()" placeholder="車位費">
                         </div>
                     </div>
                 </div>
             </aside>
 
             <div class="lg:col-span-9 space-y-4">
-                <div class="bg-white rounded-2xl shadow-xl border border-slate-200 overflow-hidden table-wrapper">
+                <div class="bg-white rounded-2xl shadow-xl border overflow-hidden table-wrapper">
                     <div id="tableOutput"></div>
                 </div>
-                <div class="flex justify-between items-center no-print text-[10px] font-bold text-slate-400 italic bg-white p-3 rounded-xl border">
-                    <p><i class="fas fa-mouse-pointer mr-1"></i> 點擊任何數值查看工程級詳解彈窗。未稅勾選：該項金額於利潤計算中自動乘上 1.05。</p>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-4">
+                        <div class="bg-blue-100 p-4 rounded-full text-blue-600"><i class="fas fa-hand-holding-usd text-2xl"></i></div>
+                        <div>
+                            <h4 class="text-xs font-black text-slate-800">法人報價原理 (Gross-up Logic)</h4>
+                            <p class="text-[10px] text-slate-500">當勾選「未稅」時，系統會自動還原含稅租金，以確保房東在扣除 10% 所得稅與 2.11% 補充保費後，實領金額等於您的報價。 [還原係數：0.8789]</p>
+                        </div>
+                    </div>
+                    <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-4">
+                        <div class="bg-orange-100 p-4 rounded-full text-orange-600"><i class="fas fa-shield-alt text-2xl"></i></div>
+                        <div>
+                            <h4 class="text-xs font-black text-slate-800">稅務連動彈窗</h4>
+                            <p class="text-[10px] text-slate-500">點擊表格內任何數值即可展開工程級算式。特別優化了「每月稅基 $\rightarrow$ 年稅基 $\rightarrow$ 年度稅額」的連動過程。</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -126,12 +130,14 @@
 
     function runCalc() {
         try {
-            const rawRA = safe('rentA'); const rentA = isEx('rtA') ? rawRA * 1.05 : rawRA;
+            // 還原公式：未稅 / (1 - 0.1 - 0.0211)
+            const grossFactor = 0.8789; 
+            const rawRA = safe('rentA'); const rentA = isEx('rtA') ? rawRA / grossFactor : rawRA;
             const trA = safe('taxA') / 100;
-            const rawRB = safe('rentB'); const rentB = isEx('rtB') ? rawRB * 1.05 : rawRB;
+            const rawRB = safe('rentB'); const rentB = isEx('rtB') ? rawRB / grossFactor : rawRB;
             const trB = safe('taxB') / 100;
-            const mFee = isEx('mtx') ? safe('mgtIn') * 1.05 : safe('mgtIn');
-            const pFee = isEx('ptx') ? safe('pkgIn') * 1.05 : safe('pkgIn');
+            const mgt = safe('mgtIn'); 
+            const pkg = safe('pkgIn');
             
             const hv = 600000; const lv = 500000;
 
@@ -149,13 +155,13 @@
 
                 if (m.type === 'sh') {
                     tbM = Math.max(0, m.m - 15000) * 0.4; ht = hv * 0.012; lt = lv * 0.002;
-                    log.tb = `每月稅基 = [(月租 ${fmt(m.m)} - 1.5萬免稅) × 40% 認列] = $${fmt(tbM)}`;
+                    log.tb = `每月稅基 = [(簽約月租 ${fmt(m.m)} - 1.5萬免稅額) × 40% 認列率] = $${fmt(tbM)}`;
                 } else if (m.type === 'pi') {
                     tbM = Math.max(0, m.m - 15000) * 0.57; ht = hv * 0.012; lt = lv * 0.002;
-                    log.tb = `每月稅基 = [(月租 ${fmt(m.m)} - 1.5萬免稅) × 57% 認列] = $${fmt(tbM)}`;
+                    log.tb = `每月稅基 = [(簽約月租 ${fmt(m.m)} - 1.5萬免稅額) × 57% 認列率] = $${fmt(tbM)}`;
                 } else if (m.type === 'self') {
                     tbM = m.m * 0.57; ht = hv * 0.024; lt = lv * 0.01;
-                    log.tb = `每月稅基 = [月租 ${fmt(m.m)} × 57% 認列] = $${fmt(tbM)}`;
+                    log.tb = `每月稅基 = [簽約月租 ${fmt(m.m)} × 57% 認列率] = $${fmt(tbM)}`;
                 } else {
                     const p1 = Math.max(0, Math.min(m.m, 20000) - 6000) * 0.47;
                     const p2 = Math.max(0, m.m - 20000) * 0.57;
@@ -163,54 +169,54 @@
                     ht = (m.type === 'orange') ? hv * 0.03 : hv * 0.024; lt = lv * 0.01;
                     wh = m.m * 12 * 0.1; nhi = m.m * 12 * 0.0211;
                     mf = (m.type === 'big_m') ? m.m * 0.1 * 12 : m.m;
-                    log.tb = `基於租賃條例第17條：<br>1. [6k-20k部分] × 47% = $${fmt(p1)}<br>2. [>20k部分] × 57% = $${fmt(p2)}<br>每月稅基共計：$${fmt(tbM)}`;
+                    log.tb = `根據租賃條例第17條階梯計算：<br>1. [6k-20k部分] × 47% = $${fmt(p1)}<br>2. [>20k部分] × 57% = $${fmt(p2)}<br>每月共計：$${fmt(tbM)}`;
                 }
 
+                log.tbAn = `1. 每月稅基 = $${fmt(tbM)}<br>2. 年稅基 = 每月稅基 × 12 = $${fmt(tbM * 12)}`;
                 const itax = tbM * 12 * m.tr;
-                log.itax = `年度所得稅 = 每月稅基 ${fmt(tbM)} × 12個月 × 稅率 ${(m.tr*100).toFixed(0)}% = $${fmt(itax)}`;
+                log.itax = `年度所得稅 = 年稅基 $${fmt(tbM * 12)} × 綜所稅率 ${(m.tr*100).toFixed(0)}% = $${fmt(itax)}`;
                 
-                const gross = (m.m + mFee + pFee) * 12;
-                const netAn = gross - itax - ht - lt - wh - nhi - mf;
-                log.net = `[年總收 ${fmt(gross)}] - [所得稅 ${fmt(itax)}] - [房屋稅 ${fmt(ht)}] - [地價稅 ${fmt(lt)}] - [物管費 ${fmt(mf)}] - [扣繳及健保 ${fmt(wh+nhi)}] = $${fmt(netAn)}`;
+                const grossAn = (m.m + mgt + pkg) * 12;
+                const netAn = grossAn - itax - ht - lt - wh - nhi - mf;
+                log.net = `[年總收 ${fmt(grossAn)}] - [所得稅 ${fmt(itax)}] - [房屋稅 ${fmt(ht)}] - [地價稅 ${fmt(lt)}] - [物管費 ${fmt(mf)}] - [法人預扣 ${fmt(wh+nhi)}] = $${fmt(netAn)}`;
 
-                return { m: m.m, mFee, pFee, g: gross, wh, nhi, tb: tbM * 12, it: itax, ht, lt, mf, netAn, log };
+                return { m: m.m, mgt, pkg, g: grossAn, wh, nhi, tbM, tbAn: tbM * 12, it: itax, ht, lt, mf, netAn, log };
             });
 
             const rows = [
-                { l: "📍 簽約月租金", key: "m", c: "rent-row" },
-                { l: "🏢 管理費收入 (月)", key: "mFee" },
-                { l: "🚗 車位費收入 (月)", key: "pFee" },
-                { l: "年度總收入 (Gross)", key: "g", c: "base-row" },
-                { l: "- 法人預扣 (10%)", key: "wh", color: "text-red-700" },
-                { l: "- 二代健保 (2.11%)", key: "nhi", color: "text-red-700" },
-                { l: "認列租金所得 (稅基)", key: "tb", c: "tax-base-row font-black", logKey: "tb" },
-                { l: "年度應繳所得稅額", key: "it", color: "text-red-800 font-black", logKey: "itax" },
-                { l: "年度房屋稅", key: "ht", color: "text-indigo-800 font-bold" },
-                { l: "年度地價稅", key: "lt", color: "text-purple-800 font-bold" },
-                { l: "年度物管服務費", key: "mf", color: "text-slate-500 font-bold" },
-                { l: "💰 最終淨利 (年實拿)", key: "netAn", c: "highlight-row font-black", logKey: "net" },
-                { l: "📅 最終淨利 (月均)", key: "netAvg", c: "highlight-row", isAvg: true }
+                { l: "📍 簽約月租金收入", k: "m", c: "rent-row" },
+                { l: "🏢 管理費 (月固定)", k: "mgt" },
+                { l: "🚗 車位費 (月固定)", k: "pkg" },
+                { l: "年度總收入 (Gross)", k: "g", c: "base-row" },
+                { l: "- 法人預扣 (10%)", k: "wh", color: "text-red-700 font-bold" },
+                { l: "- 二代健保 (2.11%)", k: "nhi", color: "text-red-700 font-bold" },
+                { l: "每月認列稅基", k: "tbM", c: "tax-base-row font-medium", logKey: "tb" },
+                { l: "認列租金所得 (年稅基)", k: "tbAn", c: "tax-base-row font-black", logKey: "tbAn" },
+                { l: "年度應繳所得稅額", k: "it", color: "text-red-800 font-black", logKey: "itax" },
+                { l: "年度房屋稅", k: "ht", color: "text-indigo-800 font-bold" },
+                { l: "年度地價稅", k: "lt", color: "text-purple-800 font-bold" },
+                { l: "年度物管服務費", k: "mf", color: "text-slate-500 font-bold" },
+                { l: "💰 最終淨利 (年實拿)", k: "netAn", c: "highlight-row font-black", logKey: "net" },
+                { l: "📅 最終淨利 (月平均)", k: "netAvg", c: "highlight-row", isAvg: true }
             ];
 
-            let tableHtml = `<table><thead><tr class="bg-slate-900 text-white"><th class="label-col">財務分析項目</th>`;
+            let tableHtml = `<table><thead><tr class="bg-slate-900 text-white"><th class="label-col">分析項目</th>`;
             modes.forEach(m => tableHtml += `<th>${m.name}</th>`);
             tableHtml += `</tr></thead><tbody>`;
 
             rows.forEach(r => {
                 tableHtml += `<tr class="${r.c || ''}"><td class="label-col font-bold">${r.l}</td>`;
                 results.forEach(res => {
-                    const val = r.isAvg ? res.netAn / 12 : res[r.key];
+                    const val = r.isAvg ? res.netAn / 12 : res[r.k];
                     const dVal = (val === 0 || !val) ? "-" : "$" + fmt(val);
-                    const logBody = r.logKey ? res.log[r.logKey] : `${r.l}<br>金額：$${dVal}<br>這是系統自動計算之最終結果值。`;
-                    tableHtml += `<td class="font-num clickable ${r.color || ''} ${r.key==='netAn'?'text-xl':''}" onclick="openD('${r.l}', '${logBody}')">${dVal}</td>`;
+                    const logBody = r.logKey ? res.log[r.logKey] : `${r.l}<br>金額：$${dVal}<br>此數值已包含含稅/未稅之換算基礎。`;
+                    tableHtml += `<td class="font-num clickable ${r.color || ''} ${r.k==='netAn'?'text-lg':''}" onclick="openD('${r.l}', '${logBody}')">${dVal}</td>`;
                 });
                 tableHtml += `</tr>`;
             });
 
             document.getElementById('tableOutput').innerHTML = tableHtml + `</tbody></table>`;
-        } catch (e) {
-            document.getElementById('tableOutput').innerHTML = `<div class="p-10 text-red-500 text-center">Engine Error: ${e.message}</div>`;
-        }
+        } catch (e) { document.getElementById('tableOutput').innerHTML = `<div class='p-10 text-red-500'>Error: ${e.message}</div>`; }
     }
     document.addEventListener('DOMContentLoaded', runCalc);
 </script>
