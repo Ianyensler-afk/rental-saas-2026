@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-    <title>Rental Profit SaaS V38 | 完美列印版</title>
+    <title>Rental Profit SaaS V39 | 完美簡潔列印版</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
@@ -38,22 +38,33 @@
         .summary-table { width: 100%; border-collapse: collapse; font-size: 11px; }
         .summary-table th, .summary-table td { border: 1px solid #334155; padding: 10px !important; text-align: left !important; }
 
-        /* --- PDF 深色滿版列印修正 --- */
+        /* --- PDF 專屬：只保留圖表與表格，完美 A4 單頁排版 --- */
         @media print {
-            @page { size: A4 landscape; margin: 0; }
-            body { background-color: #0f172a !important; color: #f1f5f9 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            @page { size: A4 landscape; margin: 8mm; }
+            body { background-color: #0f172a !important; color: #f1f5f9 !important; }
             .no-print { display: none !important; }
-            /* 縮小比例以容納圖表與表格在單頁 */
-            .print-area { width: 100% !important; transform: scale(0.55); transform-origin: top center; padding: 0 !important; }
+            
+            /* 整體縮放以適應 A4 單頁 */
+            .print-area { width: 100% !important; transform: scale(0.85); transform-origin: top center; padding: 0 !important; }
+            
+            /* 強制圖表保持並排比例 */
+            .print-chart-row { display: grid !important; grid-template-columns: 65% 33% !important; gap: 2% !important; margin-bottom: 20px !important; }
+            
+            /* 強制表格區塊 100% 滿版，無遺留空白 */
+            .print-block { display: block !important; width: 100% !important; }
+            .print-full { width: 100% !important; padding: 0 !important; max-width: 100% !important; }
+            
+            /* 移除表格的滑動條設定，確保印出完整畫面 */
+            .table-scroll-container { overflow: visible !important; padding-bottom: 0 !important; }
             .card-dark { background-color: #1e293b !important; border: 1px solid #334155 !important; }
             .label-col { background-color: #1e293b !important; }
-            canvas { max-width: 100% !important; } /* 避免圖表在列印時破版 */
+            canvas { max-width: 100% !important; }
         }
     </style>
 </head>
 <body class="p-1 md:p-2">
 
-    <div id="modal" onclick="closeModal()">
+    <div id="modal" onclick="closeModal()" class="no-print">
         <div class="modal-box" onclick="event.stopPropagation()">
             <div class="p-6 border-b border-slate-700 flex justify-between items-center">
                 <h3 id="mTitle" class="font-black text-blue-400 text-lg">數據會計算式詳解</h3>
@@ -73,22 +84,22 @@
                     <i class="fas fa-chart-pie text-xl text-white"></i>
                 </div>
                 <div>
-                    <h1 class="text-xl md:text-2xl font-black tracking-tighter text-white">Rental SaaS <span class="text-blue-500">V38</span></h1>
-                    <p class="text-[8px] text-slate-500 font-bold uppercase tracking-[0.4em]">Fintech Data Visualizer | 深色完美列印版</p>
+                    <h1 class="text-xl md:text-2xl font-black tracking-tighter text-white">Rental SaaS <span class="text-blue-500">V39</span></h1>
+                    <p class="text-[8px] text-slate-500 font-bold uppercase tracking-[0.4em]">Fintech Visualizer | 完美極簡列印版</p>
                 </div>
             </div>
             <div class="flex flex-col items-end gap-1">
                 <button onclick="window.print()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-black py-2 px-8 rounded-xl shadow-lg flex items-center gap-2 text-sm transition-all">
-                    <i class="fas fa-print"></i> 產出深色 PDF
+                    <i class="fas fa-print"></i> 匯出純淨版 PDF
                 </button>
-                <span class="text-[8px] text-slate-400 italic">列印時請確認勾選「背景圖形」</span>
+                <span class="text-[8px] text-slate-400 italic">請在列印選項中勾選「背景圖形」</span>
             </div>
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 mb-6">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 mb-6 print-chart-row">
             <div class="lg:col-span-8 card-dark p-5 rounded-3xl">
                 <h3 class="text-xs font-black text-slate-400 mb-4 uppercase tracking-widest flex items-center gap-2">
-                    <i class="fas fa-chart-bar text-blue-500"></i> 各模式年度淨利對照 (無間距緊實型)
+                    <i class="fas fa-chart-bar text-blue-500"></i> 各模式年度淨利對照
                 </h3>
                 <div class="h-[200px] w-full">
                     <canvas id="barChart"></canvas>
@@ -100,7 +111,7 @@
             </div>
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 overflow-x-hidden">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 overflow-x-hidden print-block">
             <aside class="lg:col-span-2 space-y-4 no-print">
                 <div class="card-dark p-5 rounded-3xl sticky top-4 shadow-2xl">
                     <h3 class="text-xs font-black text-blue-500 mb-6 border-b border-slate-700 pb-2 uppercase italic tracking-widest">參數中心</h3>
@@ -131,12 +142,12 @@
                 </div>
             </aside>
 
-            <div class="lg:col-span-10 space-y-4 px-2">
+            <div class="lg:col-span-10 space-y-4 px-2 print-full">
                 <div class="card-dark rounded-3xl shadow-2xl table-scroll-container">
                     <div id="tableOutput"></div>
                 </div>
 
-                <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 pb-10">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 pb-10 no-print">
                     <div class="lg:col-span-8 bg-slate-800/50 p-6 rounded-3xl border border-slate-700">
                         <h4 class="text-xs font-black text-blue-400 uppercase mb-4 flex items-center gap-2 tracking-widest italic">
                             <i class="fas fa-balance-scale"></i> 每月認列稅基免稅額度對照表
@@ -291,10 +302,9 @@
                     data: res.map(r => r.netAn), 
                     backgroundColor: ['#60a5fa', '#a5b4fc', '#6ee7b7', '#f472b6', '#fb923c'], 
                     borderRadius: 6,
-                    // 徹底解決長條圖太遠的問題：動態比例填滿
-                    categoryPercentage: 0.85, // 縮小組與組之間的空隙
-                    barPercentage: 0.9,       // 增加長條柱本身的厚度
-                    maxBarThickness: 70       // 避免在超寬螢幕下變得過於巨大
+                    categoryPercentage: 0.85, 
+                    barPercentage: 0.9,       
+                    maxBarThickness: 70       
                 }] 
             },
             options: { 
