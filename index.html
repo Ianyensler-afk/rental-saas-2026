@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-    <title>Rental Profit SaaS V43 | 雙外框收編版</title>
+    <title>Rental Profit SaaS V44 | 高對比點睛版</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
@@ -18,12 +18,26 @@
         th, td { padding: 12px 10px !important; border-bottom: 1px solid #334155; font-size: 13px; text-align: center; }
         .label-col { width: 175px; text-align: left; background: #1e293b; position: sticky; left: 0; z-index: 20; border-right: 2px solid #475569; color: #94a3b8; font-weight: 800; }
 
-        .highlight-row { background-color: rgba(30, 64, 175, 0.25) !important; color: #60a5fa !important; font-weight: 800; }
         .rent-row { background-color: rgba(251, 191, 36, 0.05) !important; color: #fbbf24 !important; }
         .tax-base-row { background-color: rgba(244, 114, 182, 0.05) !important; color: #f472b6 !important; }
         
+        /* 核心修改：淨利行高亮配色 (現金流翠綠色) */
+        .highlight-row td { 
+            background-color: #064e3b !important; /* 濃郁深墨綠色底，防透明破版 */
+            color: #4ade80 !important; /* 螢光翠綠色數字 */
+            font-size: 14.5px; 
+            font-weight: 900 !important;
+            border-top: 2px solid #10b981 !important;
+            border-bottom: 1px solid #059669 !important;
+        }
+        .highlight-row:hover td {
+            background-color: #047857 !important; /* 滑鼠懸停時微亮 */
+            color: #ffffff !important;
+            text-decoration: none !important;
+        }
+
         .clickable { cursor: pointer; transition: all 0.2s; position: relative; }
-        .clickable:hover { background-color: rgba(59, 130, 246, 0.2); }
+        .clickable:not(.highlight-row td):hover { background-color: rgba(59, 130, 246, 0.2); }
         .clickable::after { content: '🔍'; position: absolute; right: 2px; top: 2px; font-size: 8px; opacity: 0.3; }
 
         #modal { display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.9); z-index: 2000; align-items: center; justify-content: center; padding: 15px; }
@@ -55,13 +69,13 @@
                     <i class="fas fa-chart-bar text-xl text-white"></i>
                 </div>
                 <div>
-                    <h1 class="text-xl md:text-2xl font-black tracking-tighter text-white">Rental SaaS <span class="text-blue-500">V43</span></h1>
-                    <p class="text-[8px] text-slate-400 font-bold uppercase tracking-[0.4em]">Fintech Visualizer | 雙圖表收編版</p>
+                    <h1 class="text-xl md:text-2xl font-black tracking-tighter text-white">Rental SaaS <span class="text-blue-500">V44</span></h1>
+                    <p class="text-[8px] text-slate-400 font-bold uppercase tracking-[0.4em]">Fintech Visualizer | 高對比亮眼版</p>
                 </div>
             </div>
         </div>
 
-        <div class="flex flex-col lg:flex-row gap-4 mb-6 justify-start">
+        <div class="flex flex-col lg:flex-row gap-4 mb-6">
             <div class="w-full lg:w-[380px] card-dark p-5 rounded-3xl flex flex-col items-center">
                 <h3 class="text-xs font-black text-slate-400 mb-4 uppercase tracking-widest flex items-center gap-2 w-full text-left">
                     <i class="fas fa-chart-line text-blue-500"></i> 年度淨利對照
@@ -70,7 +84,7 @@
                     <canvas id="barChart"></canvas>
                 </div>
             </div>
-            <div class="w-full lg:w-[350px] card-dark p-5 rounded-3xl flex flex-col items-center">
+            <div class="w-full lg:flex-1 card-dark p-5 rounded-3xl flex flex-col items-center">
                 <h3 class="text-xs font-black text-slate-400 mb-4 uppercase tracking-widest w-full text-left ml-4 flex items-center gap-2">
                     <i class="fas fa-chart-pie text-purple-500"></i> 一般代管成本構成
                 </h3>
@@ -273,7 +287,8 @@
                 { l: "年度房屋稅", k: "htV", color: "text-indigo-400", logKey: "ht" },
                 { l: "年度地價稅", k: "ltV", color: "text-indigo-400", logKey: "lt" },
                 { l: "年度物管服務費", k: "mf", color: "text-slate-400" },
-                { l: "💰 最終淨利 (年實拿)", k: "netAn", c: "highlight-row font-black", logKey: "net" },
+                // 此兩列將會被套用全新翠綠色高對比樣式
+                { l: "💰 最終淨利 (年實拿)", k: "netAn", c: "highlight-row", logKey: "net" },
                 { l: "📅 最終淨利 (月平均)", custom: (res) => res.netAn / 12, c: "highlight-row" }
             ];
 
@@ -286,7 +301,9 @@
                 results.forEach(res => {
                     const val = r.custom ? r.custom(res) : (r.isWh ? (res.wh > 0 ? res[r.k] : 0) : res[r.k]);
                     const dVal = (typeof val === 'string') ? val : (val === 0 ? "-" : "$" + fmt(val));
-                    html += `<td class="font-num clickable ${r.color || ''}" onclick="openD('${r.l}', '${res.log[r.logKey] || r.l+'：'+dVal}')">${dVal}</td>`;
+                    html += `<td class="font-num clickable" onclick="openD('${r.l}', '${res.log[r.logKey] || r.l+'：'+dVal}')">
+                                <span class="${r.color || ''}">${dVal}</span>
+                             </td>`;
                 });
                 html += `</tr>`;
             });
