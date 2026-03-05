@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-    <title>Rental Profit SaaS V34 | 緊實視覺修正版</title>
+    <title>Rental Profit SaaS V35 | 完美佈局修復版</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
@@ -14,7 +14,6 @@
         
         .card-dark { background: #1e293b; border: 1px solid #334155; }
         
-        /* 徹底修復左右滑動裁剪與吃掉問題 */
         .table-scroll-container { 
             width: 100%; 
             overflow-x: auto !important; 
@@ -33,8 +32,7 @@
         .clickable:hover { background-color: rgba(59, 130, 246, 0.2); }
         .clickable::after { content: '🔍'; position: absolute; right: 2px; top: 2px; font-size: 8px; opacity: 0.3; }
 
-        /* 彈窗效能優化與修復 */
-        #modal { display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.9); z-index: 2000; align-items: center; justify-content: center; padding: 15px; }
+        #modal { display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.85); z-index: 2000; align-items: center; justify-content: center; padding: 15px; }
         .modal-box { background: #1e293b; border-radius: 20px; max-width: 550px; width: 100%; border: 1px solid #475569; box-shadow: 0 0 40px rgba(0,0,0,0.6); }
 
         .summary-table { width: 100%; border-collapse: collapse; font-size: 11px; }
@@ -59,7 +57,7 @@
             </div>
             <div id="mBody" class="p-6 text-sm bg-slate-900/40 italic leading-relaxed text-slate-300 font-medium tracking-wide"></div>
             <div class="p-4 bg-slate-800/50">
-                <button onclick="closeModal()" class="w-full bg-blue-600 py-3 rounded-xl font-black shadow-lg">確認並返回</button>
+                <button onclick="closeModal()" class="w-full bg-blue-600 hover:bg-blue-700 py-3 rounded-xl font-black shadow-lg">確認並返回</button>
             </div>
         </div>
     </div>
@@ -71,44 +69,47 @@
                     <i class="fas fa-layer-group text-3xl text-white"></i>
                 </div>
                 <div>
-                    <h1 class="text-3xl font-black tracking-tighter text-white">Rental Profit SaaS <span class="text-blue-500">V34</span></h1>
-                    <p class="text-[9px] text-slate-400 font-bold uppercase tracking-[0.4em]">Fintech Visualization Interface | 物理修正版</p>
+                    <h1 class="text-3xl font-black tracking-tighter text-white">Rental Profit SaaS <span class="text-blue-500">V35</span></h1>
+                    <p class="text-[9px] text-slate-400 font-bold uppercase tracking-[0.4em]">Fintech Data Visualizer | 完美修復版</p>
                 </div>
             </div>
             <button onclick="window.print()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold py-2.5 px-8 rounded-xl border border-slate-600 flex items-center gap-2 transition-all">
-                <i class="fas fa-print"></i> PDF 匯出
+                <i class="fas fa-print"></i> 匯出專業 PDF
             </button>
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-8 no-print">
             <div class="lg:col-span-8 card-dark p-6 rounded-3xl">
-                <h3 class="text-xs font-black text-slate-500 mb-4 uppercase tracking-widest flex items-center gap-2">
-                    <i class="fas fa-chart-line text-blue-500"></i> 各模式年度淨利分析 (緊實型)
+                <h3 class="text-xs font-black text-slate-400 mb-4 uppercase tracking-widest flex items-center gap-2">
+                    <i class="fas fa-chart-bar text-blue-500"></i> 各模式年度淨利對照 (緊實厚實型)
                 </h3>
-                <div class="h-[200px]"><canvas id="barChart"></canvas></div>
+                <div class="h-[220px]"><canvas id="barChart"></canvas></div>
             </div>
             <div class="lg:col-span-4 card-dark p-6 rounded-3xl text-center">
-                <h3 class="text-xs font-black text-slate-500 mb-4 uppercase tracking-widest">成本支出構成分析</h3>
-                <canvas id="pieChart"></canvas>
+                <h3 class="text-xs font-black text-slate-400 mb-4 uppercase tracking-widest">一般代管成本分析</h3>
+                <div class="h-[220px] w-full relative"><canvas id="pieChart"></canvas></div>
             </div>
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 overflow-x-hidden">
             <aside class="lg:col-span-3 space-y-4 no-print">
                 <div class="card-dark p-6 rounded-3xl sticky top-6 shadow-2xl">
-                    <h3 class="text-xs font-black text-blue-500 mb-6 border-b border-slate-700 pb-2 uppercase italic tracking-widest">參數設定面板</h3>
+                    <h3 class="text-xs font-black text-blue-500 mb-6 border-b border-slate-700 pb-2 uppercase italic tracking-widest">系統參數設定</h3>
                     <div class="space-y-5">
                         <div class="grid grid-cols-2 gap-3">
                             <div><span class="text-[9px] font-bold text-slate-500 block mb-1 uppercase">月管理費</span><input type="number" id="mgtIn" value="3000" class="w-full p-2 bg-slate-900 rounded-lg border border-slate-700 text-xs font-bold" oninput="runCalc()"></div>
                             <div><span class="text-[9px] font-bold text-slate-500 block mb-1 uppercase">月車位費</span><input type="number" id="pkgIn" value="3000" class="w-full p-2 bg-slate-900 rounded-lg border border-slate-700 text-xs font-bold" oninput="runCalc()"></div>
                         </div>
                         <div class="p-4 bg-orange-950/10 rounded-2xl border border-orange-900/30 space-y-3">
-                            <label class="block text-[10px] font-black text-orange-500 uppercase italic">軌道 A：社宅 / 公益</label>
+                            <label class="block text-[10px] font-black text-orange-500 uppercase italic">軌道 A：社宅 / 公益 / 自租</label>
                             <div class="flex gap-2">
                                 <input type="number" id="rentA" value="29000" class="w-2/3 p-2 bg-slate-800 rounded-lg border border-slate-600 font-bold text-xs" oninput="runCalc()">
                                 <select id="rtA" class="w-1/3 bg-slate-800 text-[10px] rounded-lg border-slate-600" onchange="runCalc()"><option value="inc">含稅</option><option value="ex">未稅</option></select>
                             </div>
-                            <input type="number" id="taxA" value="12" class="w-full p-2 bg-slate-800 rounded-lg border border-slate-600 font-bold text-xs" oninput="runCalc()">
+                            <div>
+                                <span class="text-[9px] font-bold text-slate-500 block mb-1">軌道 A 所得稅率 (%)</span>
+                                <input type="number" id="taxA" value="12" class="w-full p-2 bg-slate-800 rounded-lg border border-slate-600 font-bold text-xs text-orange-400" oninput="runCalc()">
+                            </div>
                         </div>
                         <div class="p-4 bg-blue-950/10 rounded-2xl border border-blue-900/30 space-y-3">
                             <label class="block text-[10px] font-black text-blue-500 uppercase italic">軌道 B：一般代管 / 法人</label>
@@ -116,7 +117,10 @@
                                 <input type="number" id="rentB" value="29000" class="w-2/3 p-2 bg-slate-800 rounded-lg border border-slate-600 font-bold text-xs" oninput="runCalc()">
                                 <select id="rtB" class="w-1/3 bg-slate-800 text-[10px] rounded-lg border-slate-600" onchange="runCalc()"><option value="inc">含稅</option><option value="ex" selected>未稅</option></select>
                             </div>
-                            <input type="number" id="taxB" value="20" class="w-full p-2 bg-slate-800 rounded-lg border border-slate-600 font-bold text-xs" oninput="runCalc()">
+                            <div>
+                                <span class="text-[9px] font-bold text-slate-500 block mb-1">軌道 B 所得稅率 (%)</span>
+                                <input type="number" id="taxB" value="20" class="w-full p-2 bg-slate-800 rounded-lg border border-slate-600 font-bold text-xs text-blue-400" oninput="runCalc()">
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -129,13 +133,13 @@
 
                 <div class="space-y-6 pb-10 no-print">
                     <div class="card-dark p-6 rounded-3xl">
-                        <h4 class="text-xs font-black text-blue-400 uppercase mb-4 flex items-center gap-2 tracking-widest italic underline decoration-blue-500/50 underline-offset-4">
-                            <i class="fas fa-balance-scale"></i> 每月認列稅基免稅額度說明
+                        <h4 class="text-xs font-black text-blue-400 uppercase mb-4 flex items-center gap-2 tracking-widest italic">
+                            <i class="fas fa-balance-scale"></i> 認列稅基免稅額度詳細說明
                         </h4>
                         <div class="overflow-x-auto">
                             <table class="summary-table w-full text-left">
                                 <thead class="bg-slate-900 text-slate-400">
-                                    <tr><th>身份類別</th><th>免稅額度 / 月</th><th>不認列比例</th><th>認列比例 (稅基)</th></tr>
+                                    <tr><th>身份類別</th><th>免稅額度 / 月</th><th>不認列比例</th><th>認列比例 (計入稅基)</th></tr>
                                 </thead>
                                 <tbody class="text-slate-400 font-medium">
                                     <tr><td>一般房東 (自租)</td><td>無免稅額</td><td>43%</td><td>57%</td></tr>
@@ -147,16 +151,17 @@
                         </div>
                     </div>
 
-                    <div class="bg-slate-800/50 p-6 rounded-3xl border border-slate-700 grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-slate-800/40 p-6 rounded-3xl border border-slate-700 grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div class="space-y-2">
                             <h4 class="text-[11px] font-black text-orange-400 uppercase italic tracking-widest"><i class="fas fa-microchip mr-2"></i> 會計邏輯備註</h4>
                             <p class="text-[11px] text-slate-400 leading-relaxed font-medium">
                                 ● 未稅還原：未稅報價 / 0.8789 (含 10% 預扣及 2.11% 健保)<br>
-                                ● 每月認列稅基：(簽約月租金 + 車位費 - 免稅額) × 認列率
+                                ● 每月稅基：(簽約租金 + 車位費 - 免稅額) × 認列率<br>
+                                ● 實際淨利：總年收 - 所得稅 - 持有稅 - 物管費 + 預扣回填
                             </p>
                         </div>
                         <div class="flex items-center justify-end text-[10px] text-slate-500 italic">
-                            秤⚖️ 本報告數據依據 2026 高雄租賃稅制模擬，所得稅率採使用者自設，認列比率符合稅規，數據僅供決策參考。
+                            ⚖️ 本系統提供財務規劃參考。所有帶有「🔍」圖示的數據皆可點擊查看拆解算式。
                         </div>
                     </div>
                 </div>
@@ -182,10 +187,9 @@
             const factor = 0.8789;
             const rA = isEx('rtA') ? safe('rentA') / factor : safe('rentA');
             const rB = isEx('rtB') ? safe('rentB') / factor : safe('rentB');
-            const taxA = safe('taxA') / 100; // 抓取使用者輸入的稅率
+            const taxA = safe('taxA') / 100;
             const taxB = safe('taxB') / 100;
             const mgt = safe('mgtIn'); const pkg = safe('pkgIn');
-            // 物理移除資產總價變量
 
             const modes = [
                 { id: 'sh', name: "社會住宅", m: rA * 0.9, tr: taxA, type: 'sh', ex: isEx('rtA') },
@@ -222,7 +226,7 @@
                 }
 
                 const tbAn = tbM * 12; const it = tbAn * m.tr;
-                log.it = `年度所得稅 = 年稅基 $${fmt(tbAn)} × 使用者自設綜所稅率 ${(m.tr*100).toFixed(0)}% = $${fmt(it)}`; // 詳解備註更新
+                log.it = `年度所得稅 = 年稅基 $${fmt(tbAn)} × 自設稅率 ${(m.tr*100).toFixed(0)}% = $${fmt(it)}`;
                 
                 const grossAn = (m.m + mgt + pkg) * 12;
                 log.g = `年度年收 = (月租 $${fmt(m.m)} + 管理費 $${fmt(mgt)} + 車位 $${fmt(pkg)}) × 12 = $${fmt(grossAn)}`;
@@ -232,16 +236,15 @@
                 log.actual = m.ex ? `實收計算：簽約租金 $${fmt(m.m)} - 10%預扣 ($${fmt(mWh)}) - 2.11%健保 ($${fmt(mNhi)}) = $${fmt(actualM)}` : `含稅模式：實收等於租金 $${fmt(actualM)}`;
                 
                 const netAn = grossAn - it - htV - ltV - mf + wh;
-                // 物理移除 ROI 計算邏輯
-                
-                log.net = `[年總收 $${fmt(grossAn)}] - [所得稅 $${fmt(it)}] - [房屋+地價稅 $${fmt(htV+ltV)}] - [物管費 $${fmt(mf)}] + [法人預扣回填 $${fmt(wh)}] = $${fmt(netAn)}`;
+                log.net = `[年總收 $${fmt(grossAn)}] - [所得稅 $${fmt(it)}] - [持有稅 $${fmt(htV+ltV)}] - [物管費 $${fmt(mf)}] + [法人預扣回填 $${fmt(wh)}] = $${fmt(netAn)}`;
                 log.ht = `房屋稅：現值 $60萬 × 適用稅率 = $${fmt(htV)}`;
                 log.lt = `地價稅：現值 $50萬 × 適用稅率 = $${fmt(ltV)}`;
 
+                // 確保 mgt 與 pkg 回傳，表格才不會出現 NaN
                 return { m: m.m, mWh, mNhi, actualM, mgt, pkg, g: grossAn, wh, tbM, tbAn, it, htV, ltV, mf, netAn, log };
             });
 
-            // 詳細欄位全數回歸
+            // 詳細欄位 100% 復活
             const rows = [
                 { l: "📍 簽約月租金收入", k: "m", c: "rent-row" },
                 { l: "- 法人預扣 (10%)", k: "mWh", color: "text-red-400 font-bold", isWh: true },
@@ -251,14 +254,13 @@
                 { l: "🚗 車位費收入 (月)", k: "pkg" },
                 { l: "年度總收入 (Gross)", k: "g", c: "base-row", logKey: "g" },
                 { l: "每月認列稅基", k: "tbM", c: "tax-base-row font-medium", logKey: "tb" },
-                { l: "認列年所得 (稅基)", k: "tbAn", c: "tax-base-row font-black", logKey: "tb" },
+                { l: "認列年所得 (稅基)", k: "tbAn", c: "tax-base-row font-black border-b border-slate-700", logKey: "tb" },
                 { l: "年度應繳所得稅額", k: "it", color: "text-red-400 font-black", logKey: "it" },
                 { l: "年度房屋稅", k: "htV", color: "text-indigo-400", logKey: "ht" },
                 { l: "年度地價稅", k: "ltV", color: "text-indigo-400", logKey: "lt" },
                 { l: "年度物管服務費", k: "mf", color: "text-slate-400" },
                 { l: "💰 最終淨利 (年實拿)", k: "netAn", c: "highlight-row font-black", logKey: "net" },
                 { l: "📅 最終淨利 (月平均)", custom: (res) => res.netAn / 12, c: "highlight-row" }
-                // 物理移除投報率欄位
             ];
 
             let html = `<table><thead><tr class="bg-slate-900 text-slate-300"><th class="label-col">詳細財務分析項目</th>`;
@@ -275,8 +277,13 @@
                 html += `</tr>`;
             });
             document.getElementById('tableOutput').innerHTML = html + `</tbody></table>`;
+            
+            // 呼叫圖表更新
             updateCharts(results);
-        } catch (e) { console.error(e); }
+        } catch (e) { 
+            console.error(e); 
+            document.getElementById('tableOutput').innerHTML = `<div class='p-10 text-red-500'>Error: ${e.message}</div>`;
+        }
     }
 
     function updateCharts(res) {
@@ -287,35 +294,42 @@
             data: { 
                 labels: ["社宅", "公益", "自租", "大管家", "橘公寓"], 
                 datasets: [{ 
-                    label: '年度年拿淨利', 
+                    label: '年實拿淨利', 
                     data: res.map(r => r.netAn), 
                     backgroundColor: '#3b82f6', 
-                    // 調整這裡：厚實長條並縮小間距
-                    barThickness: 35, // 條柱更寬
-                    borderRadius: 2 
+                    borderRadius: 4,
+                    // 讓長條圖變得厚實且緊密的關鍵設定
+                    categoryPercentage: 0.7, 
+                    barPercentage: 0.9     
                 }] 
             },
             options: { 
                 maintainAspectRatio: false, 
-                plugins: { legend: { display: false } }, 
+                plugins: { legend: { display: false }, tooltip: { callbacks: { label: (ctx) => '$' + fmt(ctx.raw) } } }, 
                 scales: { 
-                    y: { grid: { color: '#1e293b' }, ticks: { color: '#94a3b8' } }, 
-                    x: { 
-                        grid: { display: false }, 
-                        ticks: { color: '#94a3b8' },
-                        // 優化長條圖密集度
-                        categoryPercentage: 0.95, // 縮小 category 間距
-                        barPercentage: 1 // 條柱佔滿 category
-                    } 
+                    y: { grid: { color: '#334155' }, ticks: { color: '#94a3b8' } }, 
+                    x: { grid: { display: false }, ticks: { color: '#94a3b8' } } 
                 } 
             }
         });
+        
         const ctxPie = document.getElementById('pieChart').getContext('2d');
         const d = res[4]; if (pChart) pChart.destroy();
         pChart = new Chart(ctxPie, {
             type: 'doughnut',
-            data: { labels: ["所得稅", "持有稅", "維護", "淨利"], datasets: [{ data: [d.it, d.htV+d.ltV, d.mf, d.netAn], backgroundColor: ['#f43f5e', '#8b5cf6', '#475569', '#10b981'], borderWidth: 0, cutout: '70%' }] },
-            options: { maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { color: '#94a3b8', font: { size: 10 } } } } }
+            data: { 
+                labels: ["所得稅", "持有稅", "維護", "淨利"], 
+                datasets: [{ 
+                    data: [d.it, d.htV+d.ltV, d.mf, d.netAn], 
+                    backgroundColor: ['#f43f5e', '#8b5cf6', '#475569', '#10b981'], 
+                    borderWidth: 0, 
+                    cutout: '65%' 
+                }] 
+            },
+            options: { 
+                maintainAspectRatio: false, 
+                plugins: { legend: { position: 'bottom', labels: { color: '#94a3b8', font: { size: 10 } } } } 
+            }
         });
     }
     document.addEventListener('DOMContentLoaded', runCalc);
