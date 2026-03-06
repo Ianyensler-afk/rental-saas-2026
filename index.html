@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-    <title>Rental Profit SaaS V48 | 現金流精確版</title>
+    <title>Rental Profit SaaS V49 | 彈窗防護版</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
@@ -73,8 +73,8 @@
                     <i class="fas fa-chart-line text-xl text-white"></i>
                 </div>
                 <div>
-                    <h1 class="text-xl md:text-2xl font-black tracking-tighter text-white">Rental SaaS <span class="text-blue-500">V48</span></h1>
-                    <p class="text-[8px] text-slate-400 font-bold uppercase tracking-[0.4em]">Cash Flow Precision | 現金流精確版</p>
+                    <h1 class="text-xl md:text-2xl font-black tracking-tighter text-white">Rental SaaS <span class="text-blue-500">V49</span></h1>
+                    <p class="text-[8px] text-slate-400 font-bold uppercase tracking-[0.4em]">Cash Flow Precision | 彈窗防護除錯版</p>
                 </div>
             </div>
         </div>
@@ -262,7 +262,7 @@
                 let tbM = 0; let htV = 0; let ltV = 0; let mf = 0; let wh = 0; let nhi = 0;
                 let mWh = 0; let mNhi = 0;
                 let log = {};
-                let combinedM = m.m + pkg; // 稅基基準：名目租金 + 車位
+                let combinedM = m.m + pkg; 
                 let hv = 600000; let lv = 500000;
 
                 if (m.type === 'big_m' || m.type === 'orange') {
@@ -301,19 +301,16 @@
                     log.tb = `階梯認列：<br>1. [6k-20k部份] × 47% = $${fmt(p1)}<br>2. [>20k部份: $${fmt(over20k)}] × 57% = $${fmt(p2)}<br>每月稅基：$${fmt(tbM)}`;
                 }
 
-                // 實際收取的現金 (扣除代繳稅費)
                 let actualM = m.ex ? (m.m - mWh - mNhi) : m.m;
                 log.actual = m.ex ? `實收計算：簽約租金 $${fmt(m.m)} - 10%預扣 ($${fmt(mWh)}) - 2.11%健保 ($${fmt(mNhi)}) = $${fmt(actualM)}` : `含稅或個人模式：實收等於租金 $${fmt(actualM)}`;
 
-                // 所得稅計算
                 let tbAn = tbM * 12; let it = tbAn * m.tr;
                 log.it = `年度所得稅 = 年稅基 $${fmt(tbAn)} × 稅率 ${(m.tr*100).toFixed(0)}% = $${fmt(it)}`;
                 
-                // 核心修正：Gross 改為只計算入袋的「實收租金 + 車位」，徹底排除管理費
                 let grossAn = (actualM + pkg) * 12;
-                log.g = `總年收 = (實收租金 $${fmt(actualM)} + 車位 $${fmt(pkg)}) × 12 = $${fmt(grossAn)}<br><span class='text-[10px] text-slate-500'>*註：管理費為代收付，不列入營業額</span>`;
+                // 去除造成錯誤的單引號與 HTML tag，使用純文字顯示
+                log.g = `總年收 = (實收租金 $${fmt(actualM)} + 車位 $${fmt(pkg)}) × 12 = $${fmt(grossAn)}<br>※ 註：管理費為代收代付，不列入總年收計算。`;
                 
-                // 淨利計算：完美還原真實現金流
                 let netAn = grossAn - it - htV - ltV - mf + wh;
                 log.net = `[年總收 $${fmt(grossAn)}] - [所得稅 $${fmt(it)}] - [持有稅 $${fmt(htV+ltV)}] - [物管費 $${fmt(mf)}] + [預扣回填 $${fmt(wh)}] = $${fmt(netAn)}`;
                 log.ht = `房屋稅：現值 $60萬 × 適用稅率 = $${fmt(htV)}`;
@@ -327,7 +324,6 @@
                 { l: "- 法人預扣 (10%)", k: "mWh", color: "text-red-400 font-bold" },
                 { l: "- 二代健保 (2.11%)", k: "mNhi", color: "text-red-400 font-bold" },
                 { l: "💵 實際收取租金 (月)", k: "actualM", c: "text-green-400 font-black border-b border-slate-700", logKey: "actual" },
-                // 核心標籤優化，灰字表示不計入
                 { l: "🏢 管理費 (代收不計入)", k: "mgt", color: "text-slate-500 text-[11px]" }, 
                 { l: "🚗 車位費收入 (月)", k: "pkg" },
                 { l: "年度總收入 (Gross)", k: "g", c: "base-row font-bold text-blue-300", logKey: "g" },
@@ -350,7 +346,13 @@
                 results.forEach(res => {
                     let val = r.custom ? r.custom(res) : res[r.k];
                     let dVal = (typeof val === 'string') ? val : (val === 0 ? "-" : "$" + fmt(val));
-                    html += `<td class="font-num clickable" onclick="openD('${r.l}', '${res.log[r.logKey] || r.l+'：'+dVal}')">
+                    
+                    // 核心修改：字串防護機制，徹底防止引號衝突導致彈窗失效
+                    let safeTitle = r.l.replace(/'/g, "\\'");
+                    let logText = res.log[r.logKey] || r.l+'：'+dVal;
+                    let safeLog = logText.replace(/'/g, "\\'").replace(/"/g, "&quot;");
+                    
+                    html += `<td class="font-num clickable" onclick="openD('${safeTitle}', '${safeLog}')">
                                 <span class="${r.color || ''}">${dVal}</span>
                              </td>`;
                 });
