@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-    <title>Rental Profit SaaS V50.3 | 完美修正版</title>
+    <title>Rental Profit SaaS V50.5 | 橘公寓公益結案版</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
@@ -11,21 +11,44 @@
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&family=Poppins:wght@600;800&display=swap');
         body { font-family: 'Noto Sans TC', sans-serif; background-color: #0f172a; color: #f1f5f9; margin: 0; padding: 0; overflow-x: hidden; }
         .font-num { font-family: 'Poppins', sans-serif; }
+        
         .card-dark { background: #1e293b; border: 1px solid #334155; }
         .table-scroll-container { width: 100%; overflow-x: auto !important; -webkit-overflow-scrolling: touch; padding-bottom: 10px; }
-        table { table-layout: fixed; width: 100%; min-width: 950px; border-collapse: collapse; }
+        
+        table { table-layout: fixed; width: 100%; min-width: 1000px; border-collapse: collapse; }
         th, td { padding: 9px 5px !important; border-bottom: 1px solid #334155; font-size: 13px; text-align: center; word-wrap: break-word; }
+        
         .label-col { width: 145px; text-align: left; background: #1e293b; position: sticky; left: 0; z-index: 20; border-right: 2px solid #475569; color: #ffffff !important; font-weight: 800; text-shadow: 0 1px 2px rgba(0,0,0,0.4); font-size: 11.5px; letter-spacing: -0.3px; }
-        .highlight-row td { background-color: #064e3b !important; color: #4ade80 !important; font-size: 14px; font-weight: 900 !important; border-top: 2px solid #10b981 !important; border-bottom: 1px solid #059669 !important; }
+
+        .highlight-row td { 
+            background-color: #064e3b !important; 
+            color: #4ade80 !important; 
+            font-size: 14px; 
+            font-weight: 900 !important;
+            border-top: 2px solid #10b981 !important;
+            border-bottom: 1px solid #059669 !important;
+        }
+        .highlight-row:hover td { background-color: #047857 !important; color: #ffffff !important; }
+
         .rent-row { background-color: rgba(251, 191, 36, 0.05) !important; color: #fbbf24 !important; }
         .tax-base-row { background-color: rgba(244, 114, 182, 0.05) !important; color: #f472b6 !important; }
+        
         .clickable { cursor: pointer; transition: all 0.2s; position: relative; }
         .clickable:not(.highlight-row td):hover { background-color: rgba(59, 130, 246, 0.2); }
         .clickable::after { content: '🔍'; position: absolute; right: 2px; top: 2px; font-size: 8px; opacity: 0.3; }
+
         #modal { display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.9); z-index: 2000; align-items: center; justify-content: center; padding: 15px; }
         .modal-box { background: #1e293b; border-radius: 20px; max-width: 550px; width: 100%; border: 1px solid #475569; box-shadow: 0 0 40px rgba(0,0,0,0.6); }
+
         .summary-table { width: 100%; border-collapse: collapse; font-size: 11px; }
         .summary-table th, .summary-table td { border: 1px solid #334155; padding: 10px !important; text-align: left !important; }
+
+        @media print {
+            @page { size: A4 landscape; margin: 0; }
+            .no-print { display: none !important; }
+            .print-area { width: 100% !important; transform: scale(0.6); transform-origin: top center; }
+            .label-col { background: white !important; }
+        }
     </style>
 </head>
 <body class="p-2 md:p-4">
@@ -50,8 +73,8 @@
                     <i class="fas fa-check-circle text-xl text-white"></i>
                 </div>
                 <div>
-                    <h1 class="text-xl md:text-2xl font-black tracking-tighter text-white">Rental SaaS <span class="text-blue-500">V50.3</span></h1>
-                    <p class="text-[8px] text-slate-400 font-bold uppercase tracking-[0.4em]">Final Debugged | 穩定營運版</p>
+                    <h1 class="text-xl md:text-2xl font-black tracking-tighter text-white">Rental SaaS <span class="text-blue-500">V50.5</span></h1>
+                    <p class="text-[8px] text-slate-400 font-bold uppercase tracking-[0.4em]">Full Detail Edition | 橘公寓公益專版</p>
                 </div>
             </div>
         </div>
@@ -77,6 +100,7 @@
             <aside class="w-full lg:w-[200px] flex-shrink-0">
                 <div class="card-dark p-3 rounded-3xl sticky top-4 shadow-2xl border-2 border-slate-700/50">
                     <div class="space-y-2.5">
+                        
                         <div class="p-2.5 bg-slate-900 rounded-xl space-y-2 border border-slate-700">
                             <h4 class="text-[10px] font-black text-slate-300 border-b border-slate-700 pb-1">🏛️ 房屋財稅基準</h4>
                             <div class="grid grid-cols-2 gap-1.5">
@@ -93,7 +117,7 @@
                             <div><span class="text-[9px] font-bold text-slate-400 block mb-1 uppercase">管理費(月)</span><input type="number" id="mgtIn" value="2760" min="0" class="w-full p-1.5 bg-slate-800 rounded-md border border-slate-700 text-xs font-bold text-white" oninput="runCalc()"></div>
                             <div><span class="text-[9px] font-bold text-slate-400 block mb-1 uppercase">車位費(月)</span><input type="number" id="pkgIn" value="3000" min="0" class="w-full p-1.5 bg-slate-800 rounded-md border border-slate-700 text-xs font-bold text-white" oninput="runCalc()"></div>
                         </div>
-
+                        
                         <div class="p-2.5 bg-orange-950/10 rounded-xl border border-orange-900/30 space-y-1.5">
                             <label class="block text-[9px] font-black text-orange-500 uppercase italic">軌道 A：社宅/公益</label>
                             <div class="flex gap-1">
@@ -103,7 +127,7 @@
                             <div class="flex justify-between items-center bg-slate-900/60 p-1 rounded-md border border-slate-700">
                                 <span class="text-[8px] font-bold text-slate-400">社宅折數</span>
                                 <select id="shRate" class="bg-slate-800 text-[9px] rounded border-slate-600 px-1 py-0.5 text-orange-400 font-black cursor-pointer" onchange="runCalc()">
-                                    <option value="1" selected>100%</option><option value="0.9">90%</option><option value="0.8">80%</option><option value="0.7">70%</option>
+                                    <option value="1" selected>100%</option><option value="0.9">90%</option><option value="0.8">80%</option><option value="0.7">70%</option><option value="0.6">60%</option>
                                 </select>
                             </div>
                             <div><span class="text-[9px] font-bold text-slate-400 block mb-0.5">稅率 (%)</span><input type="number" id="taxA" value="12" min="0" max="100" class="w-full p-1 bg-slate-800 rounded-md border border-slate-600 font-bold text-xs text-orange-400" oninput="runCalc()"></div>
@@ -117,7 +141,7 @@
                             </div>
                             <div><span class="text-[9px] font-bold text-slate-400 block mb-0.5">稅率 (%)</span><input type="number" id="taxD" value="12" min="0" max="100" class="w-full p-1 bg-slate-800 rounded-md border border-slate-600 font-bold text-xs text-purple-400" oninput="runCalc()"></div>
                         </div>
-
+                        
                         <div class="p-2.5 bg-blue-950/10 rounded-xl border border-blue-900/30 space-y-1.5">
                             <label class="block text-[9px] font-black text-blue-500 uppercase italic">軌道 B：代管法人</label>
                             <div class="flex gap-1">
@@ -135,6 +159,7 @@
                             </div>
                             <div><span class="text-[9px] font-bold text-slate-400 block mb-0.5">稅率 (%)</span><input type="number" id="taxC" value="12" min="0" max="100" class="w-full p-1 bg-slate-800 rounded-md border border-slate-600 font-bold text-xs text-emerald-400" oninput="runCalc()"></div>
                         </div>
+
                     </div>
                 </div>
             </aside>
@@ -143,25 +168,38 @@
                 <div class="card-dark rounded-3xl shadow-2xl table-scroll-container">
                     <div id="tableOutput"></div>
                 </div>
+
                 <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 pb-10">
                     <div class="lg:col-span-8 bg-slate-800/50 p-5 rounded-3xl border border-slate-700">
-                        <h4 class="text-xs font-black text-blue-400 uppercase mb-4 flex items-center gap-2 tracking-widest italic"><i class="fas fa-balance-scale"></i> 稅基免稅額對照表</h4>
+                        <h4 class="text-xs font-black text-blue-400 uppercase mb-4 flex items-center gap-2 tracking-widest italic">
+                            <i class="fas fa-balance-scale"></i> 認列稅基免稅額度對照表
+                        </h4>
                         <div class="overflow-x-auto">
-                            <table class="summary-table w-full">
+                            <table class="summary-table w-full text-left">
                                 <thead class="bg-slate-900 text-slate-300">
-                                    <tr><th>身份類別</th><th>免稅額/月</th><th>稅基認列</th><th>持有稅率</th></tr>
+                                    <tr>
+                                        <th>身份類別</th>
+                                        <th>每月免稅額度</th>
+                                        <th class="text-emerald-400">超過免稅額 (課稅基礎計算)</th>
+                                        <th class="text-blue-400">認列比例 (計入稅基)</th>
+                                    </tr>
                                 </thead>
                                 <tbody class="text-slate-400 font-medium">
-                                    <tr><td class="text-white">一般自租</td><td>無</td><td>57%</td><td>自設</td></tr>
-                                    <tr><td class="text-orange-400 font-bold">橘公寓(公益)</td><td class="text-orange-400 font-bold">15,000 元</td><td class="text-orange-400 font-bold">57%</td><td class="text-orange-400">1.2% / 0.2%</td></tr>
-                                    <tr><td class="text-white">社會住宅</td><td>15,000 元</td><td>40%</td><td>1.2% / 0.2%</td></tr>
+                                    <tr><td class="text-white">一般房東 (自租)</td><td>無免稅額</td><td>總收入 (租金 + 車位)</td><td class="text-slate-200">57%</td></tr>
+                                    <tr><td class="text-white">一般代管 (個人)</td><td>6,000 元</td><td>(總收) - 6,000</td><td class="text-slate-200">$6k-20k: 47% / >20k: 57%</td></tr>
+                                    <tr><td class="text-orange-400 font-bold">橘公寓 (公益人)</td><td class="text-orange-400 font-bold">15,000 元</td><td>(總收) - 15,000</td><td class="text-orange-400 font-bold">57%</td></tr>
+                                    <tr><td class="text-white">社會住宅代管</td><td>15,000 元</td><td>(總收) - 15,000</td><td class="text-slate-200">40%</td></tr>
                                 </tbody>
                             </table>
                         </div>
                     </div>
-                    <div class="lg:col-span-4 bg-slate-800/30 p-5 rounded-3xl border border-slate-700 space-y-2 text-[10px] text-slate-400 italic">
-                        <h4 class="text-xs font-black text-orange-400 uppercase tracking-widest mb-1">邏輯更新 V50.3</h4>
-                        <p>● 橘公寓公益版物管費 = **1個月租金**。<br>● 公益人所得稅：(總年收 - 18萬) × 57%。<br>● 公益人持有稅：固定房屋稅 1.2% / 地價稅 0.2%。</p>
+                    <div class="lg:col-span-4 bg-slate-800/30 p-5 rounded-3xl border border-slate-700 space-y-2 text-[11px] text-slate-400 italic font-medium">
+                        <h4 class="text-xs font-black text-orange-400 uppercase tracking-widest mb-2">系統升級備註 V50.5</h4>
+                        <p class="leading-relaxed text-[10px]">
+                            ● <span class="text-orange-400 font-bold">橘公寓(公益)</span>：物管費採計固定 **1個月租金**。稅務比照公益出租人 (1.5萬免稅額 + 持有稅 1.2%/0.2%)。<br>
+                            ● <span class="text-emerald-400">實收防護</span>：僅代管法人達 $20,000 門檻需依法預扣扣繳。<br>
+                            ● <span class="text-emerald-400">管理費</span>：屬代收付項目，不列入所得稅基與營業額計算。
+                        </p>
                     </div>
                 </div>
             </div>
@@ -171,11 +209,7 @@
 <script>
     let bChart, pChart;
     const fmt = (n) => Math.round(n).toLocaleString();
-    const safe = (id) => {
-        const el = document.getElementById(id);
-        if (!el) return 0;
-        return Number(el.value) || 0;
-    };
+    const safe = (id) => Number(document.getElementById(id).value) || 0;
     const isEx = (id) => document.getElementById(id).value === 'ex';
 
     function openD(title, body) {
@@ -198,10 +232,14 @@
             let taxC = safe('taxC') / 100;
             let taxD = safe('taxD') / 100;
             
-            let mgt = safe('mgtIn'); let pkg = safe('pkgIn');
-            let shRate = safe('shRate');
-            let hv = safe('hvIn'); let lv = safe('lvIn');
-            let uHT = safe('htRate') / 100; let uLT = safe('ltRate') / 100;
+            let mgt = safe('mgtIn'); 
+            let pkg = safe('pkgIn');
+            let shRate = Number(document.getElementById('shRate').value);
+            
+            let hv = safe('hvIn');
+            let lv = safe('lvIn');
+            let uHT = safe('htRate') / 100;
+            let uLT = safe('ltRate') / 100;
 
             let modes = [
                 { id: 'sh', name: "社會住宅", m: rA * shRate, tr: taxA, type: 'sh' },
@@ -214,53 +252,84 @@
 
             let results = modes.map(m => {
                 let tbM = 0; let htV = 0; let ltV = 0; let mf = 0; let wh = 0; let nhi = 0;
-                let mWh = 0; let mNhi = 0; let log = {};
+                let mWh = 0; let mNhi = 0;
+                let log = {};
                 let combinedM = m.m + pkg; 
 
+                // 法人預扣邏輯 (僅橘公寓代管法人適用)
                 if (m.type === 'orange') {
-                    if (m.m >= 20000) { mWh = m.m * 0.1; mNhi = m.m * 0.0211; }
-                    wh = mWh * 12; nhi = mNhi * 12;
+                    if (m.m >= 20000) {
+                        mWh = m.m * 0.1;
+                        mNhi = m.m * 0.0211;
+                    }
+                    wh = mWh * 12;
+                    nhi = mNhi * 12;
                 }
 
+                // 各軌道核心會計邏輯
                 if (m.type === 'sh') {
                     tbM = Math.max(0, combinedM - 15000) * 0.4; htV = hv*0.012; ltV = lv*0.002;
-                    log.tb = `(總收 $${fmt(combinedM)} - 1.5萬) × 40% = $${fmt(tbM)}`;
+                    log.tb = `超過免稅額：(租金 $${fmt(m.m)} + 車位 $${fmt(pkg)}) - 1.5萬 = $${fmt(Math.max(0, combinedM - 15000))}<br>稅基 = 超過免額 × 40% = $${fmt(tbM)}`;
                 } else if (m.type === 'pi' || m.type === 'orange_pi') {
-                    tbM = Math.max(0, combinedM - 15000) * 0.57; htV = hv*0.012; ltV = lv*0.002;
-                    mf = (m.type === 'orange_pi') ? m.m : 0; 
+                    tbM = Math.max(0, combinedM - 15000) * 0.57; 
+                    htV = hv*0.012; ltV = lv*0.002;
+                    mf = (m.type === 'orange_pi') ? m.m : 0; // 橘公寓公益服務費 = 1個月租金
                     log.tb = `公益稅優：(總收 $${fmt(combinedM)} - 1.5萬) × 57% = $${fmt(tbM)}`;
                 } else if (m.type === 'self') {
                     tbM = combinedM * 0.57; htV = hv*uHT; ltV = lv*uLT;
-                    log.tb = `稅基認列 57%：$${fmt(tbM)}`;
+                    log.tb = `課稅基礎：總收入 (租 $${fmt(m.m)} + 車 $${fmt(pkg)}) × 57% = $${fmt(tbM)}`;
+                } else if (m.type === 'orange_p') {
+                    let base = combinedM;
+                    let p1 = Math.max(0, Math.min(base, 20000) - 6000) * 0.47;
+                    let p2 = Math.max(0, base - 20000) * 0.57;
+                    tbM = p1 + p2; htV = hv*uHT; ltV = lv*uLT;
+                    mf = m.m; // 代管個人 = 1個月租金
+                    log.tb = `階梯認列：<br>1. [6k-20k] × 47% = $${fmt(p1)}<br>2. [>20k] × 57% = $${fmt(p2)}<br>稅基：$${fmt(tbM)}`;
                 } else {
                     let base = combinedM;
                     let p1 = Math.max(0, Math.min(base, 20000) - 6000) * 0.47;
                     let p2 = Math.max(0, base - 20000) * 0.57;
                     tbM = p1 + p2; htV = hv*uHT; ltV = lv*uLT;
-                    mf = (m.type === 'orange') ? m.m * 0.1 * 12 : m.m; 
-                    log.tb = `階梯認列：$${fmt(tbM)}`;
+                    mf = m.m * 0.1 * 12; // 代管法人 = 10%
+                    log.tb = `代管法人階梯：<br>稅基：$${fmt(tbM)}`;
                 }
 
                 let actualM = m.m - mWh - mNhi;
+                if(m.type === 'orange') {
+                    log.actual = (m.m >= 20000) ? `簽約租金 $${fmt(m.m)} - 10%預扣 - 2.11%健保 = $${fmt(actualM)}` : `未達扣繳門檻，實收 $${fmt(actualM)}`;
+                } else {
+                    log.actual = `個人承租免預扣繳，實收等於租金 $${fmt(actualM)}`;
+                }
+
                 let tbAn = tbM * 12; let it = tbAn * m.tr;
-                let grossAn = (actualM + pkg) * 12;
-                let netAn = grossAn - it - htV - ltV - mf + wh;
+                log.it = `年度所得稅 = 年稅基 $${fmt(tbAn)} × 稅率 ${(m.tr*100).toFixed(0)}% = $${fmt(it)}`;
                 
-                log.actual = `實收現金：$${fmt(actualM)}`;
-                log.it = `年所得稅：年稅基 $${fmt(tbAn)} × ${m.tr*100}% = $${fmt(it)}`;
-                log.net = `年總收 $${fmt(grossAn)} - 稅額 $${fmt(it)} - 持有稅 $${fmt(htV+ltV)} - 服務費 $${fmt(mf)} = $${fmt(netAn)}`;
+                let grossAn = (actualM + pkg) * 12;
+                log.g = `總年收 = (實收現金 $${fmt(actualM)} + 車位 $${fmt(pkg)}) × 12 = $${fmt(grossAn)}`;
+                
+                let netAn = grossAn - it - htV - ltV - mf + wh;
+                log.net = `[年總收 $${fmt(grossAn)}] - [所得稅 $${fmt(it)}] - [持有稅 $${fmt(htV+ltV)}] - [物管費 $${fmt(mf)}] + [預扣返還 $${fmt(wh)}] = $${fmt(netAn)}`;
+                
+                log.ht = `房屋稅：現值 $${fmt(hv)} × ${(m.type==='sh'||m.type==='pi'||m.type==='orange_pi')?'1.2%(公益)':'自設稅率'}`;
+                log.lt = `地價稅：申報地價 $${fmt(lv)} × ${(m.type==='sh'||m.type==='pi'||m.type==='orange_pi')?'0.2%(公益)':'自設稅率'}`;
 
                 return { m: m.m, mWh, mNhi, actualM, mgt, pkg, g: grossAn, wh, nhi, tbM, tbAn, it, htV, ltV, mf, netAn, log };
             });
 
+            // 15 欄明細全數還原
             let rows = [
                 { l: "📍 簽約月租金收入", k: "m", c: "rent-row" },
+                { l: "- 法人預扣 (10%)", k: "mWh", color: "text-red-400 font-bold" },
+                { l: "- 二代健保 (2.11%)", k: "mNhi", color: "text-red-400 font-bold" },
                 { l: "💵 實際收取租金 (月)", k: "actualM", c: "text-green-400 font-black border-b border-slate-700", logKey: "actual" },
+                { l: "🏢 管理費 (代收不計入)", k: "mgt", color: "text-slate-500 text-[11px]" }, 
                 { l: "🚗 車位費收入 (月)", k: "pkg" },
-                { l: "年度總收入 (Gross)", k: "g", c: "font-bold text-blue-300", logKey: "g" },
-                { l: "每月認列稅基", k: "tbM", c: "tax-base-row", logKey: "tb" },
+                { l: "年度總收入 (Gross)", k: "g", c: "base-row font-bold text-blue-300", logKey: "g" },
+                { l: "每月認列稅基", k: "tbM", c: "tax-base-row font-medium", logKey: "tb" },
+                { l: "認列年所得 (稅基)", k: "tbAn", c: "tax-base-row font-black border-b border-slate-700" },
                 { l: "年度應繳所得稅額", k: "it", color: "text-red-400 font-black", logKey: "it" },
-                { l: "年度持有稅 (房+地)", custom: (res) => res.htV + res.ltV, color: "text-indigo-400" },
+                { l: "年度房屋稅", k: "htV", color: "text-indigo-400", logKey: "ht" },
+                { l: "年度地價稅", k: "ltV", color: "text-indigo-400", logKey: "lt" },
                 { l: "年度物管服務費", k: "mf", color: "text-slate-400" },
                 { l: "💰 最終淨利 (年實拿)", k: "netAn", c: "highlight-row", logKey: "net" },
                 { l: "📅 最終淨利 (月平均)", custom: (res) => res.netAn / 12, c: "highlight-row" }
@@ -274,7 +343,7 @@
                 html += `<tr class="${r.c || ''}"><td class="label-col">${r.l}</td>`;
                 results.forEach(res => {
                     let val = r.custom ? r.custom(res) : res[r.k];
-                    let dVal = (val === 0) ? "-" : "$" + fmt(val);
+                    let dVal = (val === 0) ? "-" : (typeof val === 'string' ? val : "$" + fmt(val));
                     let safeTitle = r.l.replace(/'/g, "\\'");
                     let logText = res.log[r.logKey] || r.l+'：'+dVal;
                     let safeLog = logText.replace(/'/g, "\\'").replace(/"/g, "&quot;");
@@ -286,7 +355,7 @@
             updateCharts(results);
         } catch (e) { 
             console.error(e);
-            document.getElementById('tableOutput').innerHTML = `<div class='p-5 text-red-500'>計算錯誤：${e.message}</div>`;
+            document.getElementById('tableOutput').innerHTML = `<div class='p-10 text-red-500 font-bold bg-slate-900 rounded-xl'>系統崩潰：${e.message}</div>`;
         }
     }
 
@@ -295,17 +364,42 @@
         if (bChart) bChart.destroy();
         bChart = new Chart(ctxBar, {
             type: 'bar',
-            data: { labels: ["社宅", "公益", "自租", "橘(公益)", "橘(法)", "橘(個)"], datasets: [{ data: res.map(r => r.netAn), backgroundColor: ['#60a5fa', '#a5b4fc', '#6ee7b7', '#f97316', '#fb923c', '#fcd34d'], borderRadius: 4, barThickness: 16 }] },
-            options: { maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { grid: { color: '#334155' }, ticks: { color: '#94a3b8' } }, x: { ticks: { color: '#94a3b8', font: {size: 10} } } } }
+            data: { 
+                labels: ["社宅", "公益", "自租", "橘(公益)", "橘(法)", "橘(個)"], 
+                datasets: [{ 
+                    label: '年實拿淨利', 
+                    data: res.map(r => r.netAn), 
+                    backgroundColor: ['#60a5fa', '#a5b4fc', '#6ee7b7', '#f97316', '#fb923c', '#fcd34d'], 
+                    borderRadius: 4, barThickness: 16 
+                }] 
+            },
+            options: { 
+                maintainAspectRatio: false, 
+                plugins: { legend: { display: false } }, 
+                scales: { 
+                    y: { grid: { color: '#334155' }, ticks: { color: '#94a3b8' } }, 
+                    x: { ticks: { color: '#94a3b8', font: {size: 10} } } 
+                } 
+            }
         });
         
         let ctxPie = document.getElementById('pieChart').getContext('2d');
-        let d = res[3]; 
+        let d = res[3]; // 橘公寓公益軌道
         if (pChart) pChart.destroy();
         pChart = new Chart(ctxPie, {
             type: 'doughnut',
-            data: { labels: ["所得稅", "持有稅", "物管費", "淨利"], datasets: [{ data: [d.it, d.htV+d.ltV, d.mf, d.netAn], backgroundColor: ['#f43f5e', '#8b5cf6', '#475569', '#10b981'], borderWidth: 0, cutout: '75%' }] },
-            options: { maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { color: '#94a3b8', font: { size: 10 } } } } }
+            data: { 
+                labels: ["所得稅", "持有稅", "物管費", "淨利"], 
+                datasets: [{ 
+                    data: [d.it, d.htV+d.ltV, d.mf, d.netAn], 
+                    backgroundColor: ['#f43f5e', '#8b5cf6', '#475569', '#10b981'], 
+                    borderWidth: 0, cutout: '75%' 
+                }] 
+            },
+            options: { 
+                maintainAspectRatio: false, 
+                plugins: { legend: { position: 'bottom', labels: { color: '#94a3b8', font: { size: 10 } } } } 
+            }
         });
     }
     document.addEventListener('DOMContentLoaded', runCalc);
