@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-    <title>Rental Profit SaaS V50 | 完美結案版</title>
+    <title>Rental Profit SaaS V50 | 橘公寓公益升級版</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
@@ -69,12 +69,12 @@
     <div class="max-w-[98%] mx-auto pt-2">
         <div class="flex justify-between items-center mb-5 px-2">
             <div class="flex items-center gap-3">
-                <div class="bg-blue-600 p-3 rounded-xl shadow-xl">
-                    <i class="fas fa-check-circle text-xl text-white"></i>
+                <div class="bg-orange-600 p-3 rounded-xl shadow-xl">
+                    <i class="fas fa-hand-holding-heart text-xl text-white"></i>
                 </div>
                 <div>
-                    <h1 class="text-xl md:text-2xl font-black tracking-tighter text-white">Rental SaaS <span class="text-blue-500">V50</span></h1>
-                    <p class="text-[8px] text-slate-400 font-bold uppercase tracking-[0.4em]">Final Edition | 完美防護結案版</p>
+                    <h1 class="text-xl md:text-2xl font-black tracking-tighter text-white">Rental SaaS <span class="text-orange-500">V50.1</span></h1>
+                    <p class="text-[8px] text-slate-400 font-bold uppercase tracking-[0.4em]">Public Interest Edition | 橘公寓公益版</p>
                 </div>
             </div>
         </div>
@@ -90,7 +90,7 @@
             </div>
             <div class="w-full lg:w-[280px] card-dark p-4 rounded-3xl flex flex-col items-center">
                 <h3 class="text-xs font-black text-slate-400 mb-3 uppercase tracking-widest w-full text-left ml-4 flex items-center gap-2">
-                    <i class="fas fa-chart-pie text-purple-500"></i> 一般代管成本
+                    <i class="fas fa-chart-pie text-purple-500"></i> 橘公寓(公益)成本結構
                 </h3>
                 <div class="h-[200px] w-full max-w-[180px] relative flex justify-center"><canvas id="pieChart"></canvas></div>
             </div>
@@ -217,8 +217,8 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td class="text-white">公益出租人</td>
-                                        <td>15,000 元</td>
+                                        <td class="text-orange-400 font-bold">橘公寓 (公益出租人)</td>
+                                        <td class="text-orange-400 font-bold">15,000 元</td>
                                         <td>總收入 (租金 + 車位) - 15,000</td>
                                         <td class="text-slate-200">57%</td>
                                     </tr>
@@ -233,11 +233,11 @@
                         </div>
                     </div>
                     <div class="lg:col-span-4 bg-slate-800/30 p-5 rounded-3xl border border-slate-700 space-y-2 text-[11px] text-slate-400 italic font-medium">
-                        <h4 class="text-xs font-black text-orange-400 uppercase tracking-widest mb-2">系統升級備註 V50</h4>
+                        <h4 class="text-xs font-black text-orange-400 uppercase tracking-widest mb-2">公益升級備註 V50.1</h4>
                         <p class="leading-relaxed text-[10px]">
-                            ● <span class="text-emerald-400">實收防護</span>：租賃法人達 $20,000 法定門檻，方依法扣除 10% 預扣與 2.11% 健保。<br>
-                            ● <span class="text-emerald-400">總年收 (Gross)</span>：(實際收取 + 車位) × 12。管理費屬代收代付，不列入營業額。<br>
-                            ● <span class="text-emerald-400">稅基與淨利</span>：嚴格依各軌道稅率、階梯制度與持有稅自訂參數運算。
+                            ● <span class="text-orange-400 font-bold">橘公寓(公益)</span>：比照「公益出租人」資格，房屋稅 1.2% / 地價稅 0.2%，且享有 $15,000 免稅額。<br>
+                            ● <span class="text-emerald-400">實收防護</span>：僅針對「代管法人」且租金達 $20,000 以上執行法定扣繳。<br>
+                            ● <span class="text-emerald-400">物管費用</span>：橘公寓公益版預設包含 10% 代管服務費 (1.2個月租金/年)。
                         </p>
                     </div>
                 </div>
@@ -264,20 +264,17 @@
             let rA = isEx('rtA') ? safe('rentA') / factor : safe('rentA');
             let rB = isEx('rtB') ? safe('rentB') / factor : safe('rentB');
             let rC = isEx('rtC') ? safe('rentC') / factor : safe('rentC');
-            // 新增讀取軌道 D (自租)
             let rD = isEx('rtD') ? safe('rentD') / factor : safe('rentD');
             
             let taxA = safe('taxA') / 100;
             let taxB = safe('taxB') / 100;
             let taxC = safe('taxC') / 100;
-            // 新增讀取軌道 D 稅率
             let taxD = safe('taxD') / 100;
             
             let mgt = safe('mgtIn'); 
             let pkg = safe('pkgIn');
             let shRate = Number(document.getElementById('shRate').value);
             
-            // 讀取動態持有稅設定
             let hv = safe('hvIn');
             let lv = safe('lvIn');
             let userHtRate = safe('htRate') / 100;
@@ -286,9 +283,9 @@
             let modes = [
                 { id: 'sh', name: "社會住宅", m: rA * shRate, tr: taxA, type: 'sh', ex: isEx('rtA') },
                 { id: 'pi', name: "公益出租", m: rA, tr: taxA, type: 'pi', ex: isEx('rtA') },
-                // 獨立出來的自租使用 rD 和 taxD
                 { id: 'self', name: "房東自租", m: rD, tr: taxD, type: 'self', ex: isEx('rtD') }, 
-                { id: 'big_m', name: "大管家<br><span class='text-[10px]'>(代管)</span>", m: rB, tr: taxB, type: 'big_m', ex: isEx('rtB') },
+                // 這裡將「大管家」改為「橘公寓(公益)」並對應公益出租人計算方式
+                { id: 'orange_pi', name: "橘公寓<br><span class='text-[10px]'>(代管個人 公益人)</span>", m: rB, tr: taxA, type: 'orange_pi', ex: isEx('rtB') },
                 { id: 'orange', name: "橘公寓<br><span class='text-[10px]'>(代管法人)</span>", m: rB, tr: taxB, type: 'orange', ex: isEx('rtB') },
                 { id: 'orange_p', name: "橘公寓<br><span class='text-[10px]'>(代管個人)</span>", m: rC, tr: taxC, type: 'orange_p', ex: isEx('rtC') } 
             ];
@@ -299,8 +296,7 @@
                 let log = {};
                 let combinedM = m.m + pkg; 
 
-                // 防漏機制 1：法人預扣與健保的 2萬 門檻判定
-                if (m.type === 'big_m' || m.type === 'orange') {
+                if (m.type === 'orange') {
                     if (m.m >= 20000) {
                         mWh = m.m * 0.1;
                         mNhi = m.m * 0.0211;
@@ -309,13 +305,18 @@
                     nhi = mNhi * 12;
                 }
 
-                // 稅基與持有稅計算 (套用自訂參數)
+                // 核心運算邏輯
                 if (m.type === 'sh') {
                     tbM = Math.max(0, combinedM - 15000) * 0.4; htV = hv*0.012; ltV = lv*0.002;
                     log.tb = `超過免稅額：(租金 $${fmt(m.m)} + 車位 $${fmt(pkg)}) - 1.5萬 = $${fmt(Math.max(0, combinedM - 15000))}<br>稅基 = 超過免額 × 40% = $${fmt(tbM)}`;
-                } else if (m.type === 'pi') {
-                    tbM = Math.max(0, combinedM - 15000) * 0.57; htV = hv*0.012; ltV = lv*0.002;
-                    log.tb = `超過免稅額：(租金 $${fmt(m.m)} + 車位 $${fmt(pkg)}) - 1.5萬 = $${fmt(Math.max(0, combinedM - 15000))}<br>稅基 = 超過免額 × 57% = $${fmt(tbM)}`;
+                } else if (m.type === 'pi' || m.type === 'orange_pi') {
+                    // 公益出租人邏輯：免稅額 1.5萬，57%認列，持有稅優惠
+                    tbM = Math.max(0, combinedM - 15000) * 0.57; 
+                    htV = hv*0.012; 
+                    ltV = lv*0.002;
+                    // 如果是橘公寓代管，則需計算 10% 服務費
+                    mf = (m.type === 'orange_pi') ? m.m * 0.1 * 12 : 0;
+                    log.tb = `公益出租優惠：<br>(總收 $${fmt(combinedM)} - 免稅額 1.5萬) × 57% = $${fmt(tbM)}`;
                 } else if (m.type === 'self') {
                     tbM = combinedM * 0.57; htV = hv*userHtRate; ltV = lv*userLtRate;
                     log.tb = `課稅基礎：總收入 (租 $${fmt(m.m)} + 車 $${fmt(pkg)}) = $${fmt(combinedM)}<br>稅基 = 基礎 × 57% = $${fmt(tbM)}`;
@@ -326,48 +327,38 @@
                     let p2 = over20k * 0.57;
                     tbM = p1 + p2;
                     htV = hv*userHtRate; ltV = lv*userLtRate;
-                    mf = m.m; 
+                    mf = m.m; // 服務費預設 1 個月
                     log.tb = `階梯認列：<br>1. [6k-20k] × 47% = $${fmt(p1)}<br>2. [>20k部份: $${fmt(over20k)}] × 57% = $${fmt(p2)}<br>每月稅基：$${fmt(tbM)}`;
                 } else {
+                    // 代管法人
                     let base = combinedM;
                     let p1 = Math.max(0, Math.min(base, 20000) - 6000) * 0.47;
                     let over20k = Math.max(0, base - 20000);
                     let p2 = over20k * 0.57;
                     tbM = p1 + p2;
-                    htV = hv*userHtRate; ltV = lv*userLtRate; // 防漏機制 4：不再寫死橘公寓 3%
-                    mf = (m.type === 'big_m') ? m.m * 0.1 * 12 : m.m;
-                    log.tb = `階梯認列：<br>1. [6k-20k部份] × 47% = $${fmt(p1)}<br>2. [>20k部份: $${fmt(over20k)}] × 57% = $${fmt(p2)}<br>每月稅基：$${fmt(tbM)}`;
+                    htV = hv*userHtRate; ltV = lv*userLtRate;
+                    mf = m.m * 0.1 * 12; // 10% 服務費
+                    log.tb = `階梯認列：<br>1. [6k-20k部份] × 47% = $${fmt(p1)}<br>2. [>20k部份] × 57% = $${fmt(p2)}`;
                 }
 
-                // 防漏機制 2：實收現金精準化
                 let actualM = m.m - mWh - mNhi;
-                if(m.type === 'big_m' || m.type === 'orange') {
-                    if(m.m >= 20000) {
-                        log.actual = `簽約租金 $${fmt(m.m)} - 10%預扣 ($${fmt(mWh)}) - 2.11%健保 ($${fmt(mNhi)}) = $${fmt(actualM)}<br><span class='text-[10px] text-orange-400 font-bold'>*達2萬元門檻，需依法代扣繳</span>`;
-                    } else {
-                        log.actual = `簽約租金 $${fmt(m.m)} <br><span class='text-[10px] text-emerald-400 font-bold'>*未達2萬元法定門檻，免預扣與健保</span><br>實收等於租金 $${fmt(actualM)}`;
-                    }
+                if(m.type === 'orange') {
+                    log.actual = (m.m >= 20000) ? `法人預扣扣除後實收：$${fmt(actualM)}` : `未達扣繳門檻實收：$${fmt(actualM)}`;
                 } else {
-                    log.actual = `個人承租免預扣繳，實收等於簽約租金 $${fmt(actualM)}`;
+                    log.actual = `個人承租/公益身份，實收租金 $${fmt(actualM)}`;
                 }
 
                 let tbAn = tbM * 12; let it = tbAn * m.tr;
                 log.it = `年度所得稅 = 年稅基 $${fmt(tbAn)} × 稅率 ${(m.tr*100).toFixed(0)}% = $${fmt(it)}`;
                 
                 let grossAn = (actualM + pkg) * 12;
-                log.g = `總年收 = (實收現金 $${fmt(actualM)} + 車位 $${fmt(pkg)}) × 12 = $${fmt(grossAn)}<br>※ 註：管理費為代收付，不列入營業額計算`;
+                log.g = `總年收 = (實收租金 $${fmt(actualM)} + 車位 $${fmt(pkg)}) × 12 = $${fmt(grossAn)}`;
                 
                 let netAn = grossAn - it - htV - ltV - mf + wh;
-                log.net = `[年總收 $${fmt(grossAn)}] - [所得稅 $${fmt(it)}] - [持有稅 $${fmt(htV+ltV)}] - [物管費 $${fmt(mf)}] + [預扣抵減 $${fmt(wh)}] = $${fmt(netAn)}`;
+                log.net = `年總收 $${fmt(grossAn)} - 所得稅 $${fmt(it)} - 持有稅 $${fmt(htV+ltV)} - 物管費 $${fmt(mf)} = $${fmt(netAn)}`;
                 
-                // 持有稅詳解
-                if(m.type === 'sh' || m.type === 'pi') {
-                    log.ht = `房屋稅：現值 $${fmt(hv)} × 1.2% (公益優惠) = $${fmt(htV)}`;
-                    log.lt = `地價稅：現值 $${fmt(lv)} × 0.2% (公益優惠) = $${fmt(ltV)}`;
-                } else {
-                    log.ht = `房屋稅：現值 $${fmt(hv)} × 自設稅率 ${userHtRate*100}% = $${fmt(htV)}`;
-                    log.lt = `地價稅：現值 $${fmt(lv)} × 自設稅率 ${userLtRate*100}% = $${fmt(ltV)}`;
-                }
+                log.ht = `房屋稅：現值 $${fmt(hv)} × ${(m.type==='sh'||m.type==='pi'||m.type==='orange_pi')?'1.2%':'自設稅率'}`;
+                log.lt = `地價稅：現值 $${fmt(lv)} × ${(m.type==='sh'||m.type==='pi'||m.type==='orange_pi')?'0.2%':'自設稅率'}`;
 
                 return { m: m.m, mWh, mNhi, actualM, mgt, pkg, g: grossAn, wh, nhi, tbM, tbAn, it, htV, ltV, mf, netAn, log };
             });
@@ -399,14 +390,10 @@
                 results.forEach(res => {
                     let val = r.custom ? r.custom(res) : res[r.k];
                     let dVal = (typeof val === 'string') ? val : (val === 0 ? "-" : "$" + fmt(val));
-                    
                     let safeTitle = r.l.replace(/'/g, "\\'");
                     let logText = res.log[r.logKey] || r.l+'：'+dVal;
                     let safeLog = logText.replace(/'/g, "\\'").replace(/"/g, "&quot;");
-                    
-                    html += `<td class="font-num clickable" onclick="openD('${safeTitle}', '${safeLog}')">
-                                <span class="${r.color || ''}">${dVal}</span>
-                             </td>`;
+                    html += `<td class="font-num clickable" onclick="openD('${safeTitle}', '${safeLog}')"><span class="${r.color || ''}">${dVal}</span></td>`;
                 });
                 html += `</tr>`;
             });
@@ -414,7 +401,7 @@
             updateCharts(results);
         } catch (e) { 
             console.error(e); 
-            document.getElementById('tableOutput').innerHTML = `<div class='p-10 text-red-500 font-bold bg-slate-900 rounded-xl'>系統崩潰，請檢查輸入值：${e.message}</div>`;
+            document.getElementById('tableOutput').innerHTML = `<div class='p-10 text-red-500 font-bold bg-slate-900 rounded-xl'>系統崩潰：${e.message}</div>`;
         }
     }
 
@@ -424,18 +411,18 @@
         bChart = new Chart(ctxBar, {
             type: 'bar',
             data: { 
-                labels: ["社宅", "公益", "自租", "大管家", "橘公寓(法)", "橘公寓(個)"], 
+                labels: ["社宅", "公益", "自租", "橘公寓(公益)", "橘公寓(法)", "橘公寓(個)"], 
                 datasets: [{ 
                     label: '年實拿淨利', 
                     data: res.map(r => r.netAn), 
-                    backgroundColor: ['#60a5fa', '#a5b4fc', '#6ee7b7', '#f472b6', '#fb923c', '#fcd34d'], 
+                    backgroundColor: ['#60a5fa', '#a5b4fc', '#6ee7b7', '#f97316', '#fb923c', '#fcd34d'], 
                     borderRadius: 4,
                     barThickness: 16 
                 }] 
             },
             options: { 
                 maintainAspectRatio: false, 
-                plugins: { legend: { display: false }, tooltip: { callbacks: { label: (ctx) => '$' + fmt(ctx.raw) } } }, 
+                plugins: { legend: { display: false } }, 
                 scales: { 
                     y: { grid: { color: '#334155' }, ticks: { color: '#94a3b8' } }, 
                     x: { grid: { display: false }, ticks: { color: '#94a3b8', font: {size: 10} } } 
@@ -444,12 +431,12 @@
         });
         
         let ctxPie = document.getElementById('pieChart').getContext('2d');
-        let d = res[3]; 
+        let d = res[3]; // 指向橘公寓(公益)
         if (pChart) pChart.destroy();
         pChart = new Chart(ctxPie, {
             type: 'doughnut',
             data: { 
-                labels: ["所得稅", "持有稅", "維護", "淨利"], 
+                labels: ["所得稅", "持有稅", "服務費", "淨利"], 
                 datasets: [{ 
                     data: [d.it, d.htV+d.ltV, d.mf, d.netAn], 
                     backgroundColor: ['#f43f5e', '#8b5cf6', '#475569', '#10b981'], 
